@@ -1,0 +1,119 @@
+#pragma once
+#include "Contacto.h"
+class ListaContacto
+{
+private:
+	Contacto** arreglo;
+	int N;//tamaño del arreglo
+public:
+	ListaContacto();
+	~ListaContacto();
+	//métodos
+	void AgregarContacto(Contacto* objeto);
+	void MostrarListaContacto();
+	//método get
+	int get_N(); //obtener el tamaño del arreglo
+};
+// Implementación
+ListaContacto::ListaContacto() {
+	arreglo = nullptr; //inicializa el arreglo
+	N = 0;//tamaño de arreglo
+}
+ListaContacto::~ListaContacto(){}
+//métodos
+void ListaContacto::AgregarContacto(Contacto* objeto) {
+	//Crear un arreglo temporal de tamaño +1
+	Contacto** temporal = new Contacto * [N + 1];
+	// copia los datos del arreglo al temporal
+	for (int i = 0; i < N; i++)
+		temporal[i] = arreglo[i];
+	//agregar un nuevo elemento
+	temporal[N] = objeto;
+	//actualizamos el tamaño del arreglo
+	N = N + 1;
+	//borramos el arreglo original
+	if (arreglo != nullptr) delete arreglo;
+	//asignamos temporal al arreglo
+	arreglo = temporal;
+}
+void ListaContacto::MostrarListaContacto() {
+	if (arreglo != nullptr) {
+		//mostrar contactos
+		for (int i = 0; i < N; i++) {
+			cout << arreglo[i]->get_Nombre() << "\t";
+			cout << arreglo[i]->get_Numero() << "\t";
+			cout << arreglo[i]->get_Correo() << "\t";
+		}
+	}
+	else
+		cout << "\n No hay contactos...";
+}
+//método get
+int ListaContacto::get_N() { return N; }
+
+
+
+#pragma once
+#include <iostream>
+using namespace std;
+
+class Contacto {
+private:
+	string Nombre;
+	string Numero;
+	string Correo;
+public:
+	Contacto();
+	Contacto(string pNombre, string pNumero, string pCorreo);
+	~Contacto();
+	//Metodos de acceso
+	//Get
+	string get_Nombre();
+	string get_Numero();
+	string get_Correo();
+	//Set
+	void set_Nombre(string valor);
+	void set_Numero(string valor);
+	void set_Correo(string valor);
+};//Definiendo la clase
+
+//Implementacion 
+
+Contacto::Contacto() {
+	Nombre = "Eduardo";
+	Numero = "123456";
+	Correo = "edu@upc.edu.pe";
+
+}
+Contacto::Contacto(string pNombre, string pNumero, string pCorreo) {
+	Nombre = pNombre;
+	Numero = pNumero;
+	Correo = pCorreo;
+
+}
+Contacto::~Contacto(){}
+
+//Metodos de acceso
+//Get
+string Contacto::get_Nombre() { return Nombre;  }
+string Contacto::get_Numero() { return Numero; }
+string Contacto::get_Correo() { return Correo; }
+//Set
+void Contacto::set_Nombre(string valor) { Nombre = valor; }
+void Contacto::set_Numero(string valor) { Numero = valor; }
+void Contacto::set_Correo(string valor) { Correo = valor; }
+
+
+
+
+#include "pch.h"
+
+using namespace System;
+
+int main(array<System::String ^> ^args)
+{
+    return 0;
+}
+
+
+
