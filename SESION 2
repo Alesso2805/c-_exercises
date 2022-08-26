@@ -1,55 +1,49 @@
-#pragma once
-#include "Contacto.h"
-class ListaContacto
-{
-private:
-	Contacto** arreglo;
-	int N;//tamaño del arreglo
-public:
-	ListaContacto();
-	~ListaContacto();
-	//métodos
-	void AgregarContacto(Contacto* objeto);
-	void MostrarListaContacto();
-	//método get
-	int get_N(); //obtener el tamaño del arreglo
-};
-// Implementación
-ListaContacto::ListaContacto() {
-	arreglo = nullptr; //inicializa el arreglo
-	N = 0;//tamaño de arreglo
-}
-ListaContacto::~ListaContacto(){}
-//métodos
-void ListaContacto::AgregarContacto(Contacto* objeto) {
-	//Crear un arreglo temporal de tamaño +1
-	Contacto** temporal = new Contacto * [N + 1];
-	// copia los datos del arreglo al temporal
-	for (int i = 0; i < N; i++)
-		temporal[i] = arreglo[i];
-	//agregar un nuevo elemento
-	temporal[N] = objeto;
-	//actualizamos el tamaño del arreglo
-	N = N + 1;
-	//borramos el arreglo original
-	if (arreglo != nullptr) delete arreglo;
-	//asignamos temporal al arreglo
-	arreglo = temporal;
-}
-void ListaContacto::MostrarListaContacto() {
-	if (arreglo != nullptr) {
-		//mostrar contactos
-		for (int i = 0; i < N; i++) {
-			cout << arreglo[i]->get_Nombre() << "\t";
-			cout << arreglo[i]->get_Numero() << "\t";
-			cout << arreglo[i]->get_Correo() << "\t";
+#include "MisFunciones.h"
+#include "ListaContacto.h"
+#include <iostream>
+using namespace std;
+int main() {
+	ListaContacto* ObjListaContacto;
+	Contacto* ObjContacto;
+	//instanciar
+	ObjListaContacto = new ListaContacto();
+	//variables
+	string NombreContacto;
+	string NumeroContacto;
+	string CorreoContacto;
+
+	while (1) {
+		system("cls");
+		int opcion = menu();
+		if (opcion == 1) {
+			ObjListaContacto->MostrarListaContacto();
 		}
+		if (opcion == 2) {
+			//ingreso de datos
+			cout << "\nIngrese Nombre: "; cin >> NombreContacto;
+			cout << "\nIngrese Numero: "; cin >> NumeroContacto;
+			cout << "\nIngrese Correo: "; cin >> CorreoContacto;
+			//instanciar al objeto Contacto
+			ObjContacto = new Contacto();
+			ObjContacto->set_Nombre(NombreContacto);
+			ObjContacto->set_Numero(NumeroContacto);
+			ObjContacto->set_Correo(CorreoContacto);
+			//agregar al arreglo
+			ObjListaContacto->AgregarContacto(ObjContacto);
+		}
+		if (opcion == 3) { return 0; }
+		cout << "\n\nPresione una tecla para continuar";
+		cin.get();
+		cin.ignore();
 	}
-	else
-		cout << "\n No hay contactos...";
 }
-//método get
-int ListaContacto::get_N() { return N; }
+
+
+
+
+
+
+
 
 
 
@@ -91,11 +85,11 @@ Contacto::Contacto(string pNombre, string pNumero, string pCorreo) {
 	Correo = pCorreo;
 
 }
-Contacto::~Contacto(){}
+Contacto::~Contacto() {}
 
 //Metodos de acceso
 //Get
-string Contacto::get_Nombre() { return Nombre;  }
+string Contacto::get_Nombre() { return Nombre; }
 string Contacto::get_Numero() { return Numero; }
 string Contacto::get_Correo() { return Correo; }
 //Set
@@ -106,14 +100,78 @@ void Contacto::set_Correo(string valor) { Correo = valor; }
 
 
 
-#include "pch.h"
 
-using namespace System;
-
-int main(array<System::String ^> ^args)
+#pragma once
+#include "Contacto.h"
+class ListaContacto
 {
-    return 0;
+private:
+	Contacto** arreglo;
+	int N;//tamaño del arreglo
+public:
+	ListaContacto();
+	~ListaContacto();
+	//métodos
+	void AgregarContacto(Contacto* objeto);
+	void MostrarListaContacto();
+	//método get
+	int get_N(); //obtener el tamaño del arreglo
+};
+// Implementación
+ListaContacto::ListaContacto() {
+	arreglo = nullptr; //inicializa el arreglo
+	N = 0;//tamaño de arreglo
 }
+ListaContacto::~ListaContacto() {}
+//métodos
+void ListaContacto::AgregarContacto(Contacto* objeto) {
+	//Crear un arreglo temporal de tamaño +1
+	Contacto** temporal = new Contacto * [N + 1];
+	// copia los datos del arreglo al temporal
+	for (int i = 0; i < N; i++)
+		temporal[i] = arreglo[i];
+	//agregar un nuevo elemento
+	temporal[N] = objeto;
+	//actualizamos el tamaño del arreglo
+	N = N + 1;
+	//borramos el arreglo original
+	if (arreglo != nullptr) delete arreglo;
+	//asignamos temporal al arreglo
+	arreglo = temporal;
+}
+void ListaContacto::MostrarListaContacto() {
+	if (arreglo != nullptr) {
+		//mostrar contactos
+		for (int i = 0; i < N; i++) {
+			cout << arreglo[i]->get_Nombre() << "\t";
+			cout << arreglo[i]->get_Numero() << "\t";
+			cout << arreglo[i]->get_Correo() << "\t\n";
+		}
+	}
+	else
+		cout << "\n No hay contactos...";
+}
+//método get
+int ListaContacto::get_N() { return N; }
 
 
 
+
+
+
+#pragma once
+#include <iostream>
+using namespace std;
+
+int menu() {
+	int opcion;
+	do {
+		cout << "\nMenu de opciones";
+		cout << "\n1 - Mostrar Contactos";
+		cout << "\n2 - Agregar Contacto";
+		cout << "\n3 - Salir";
+		cout << "\nElegir opcion: ";
+		cin >> opcion;
+	} while (opcion < 1 || opcion > 3);
+	return opcion;
+}
