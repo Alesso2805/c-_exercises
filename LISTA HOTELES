@@ -1,0 +1,200 @@
+#include "arrhotel.h"
+#include <iostream>
+using namespace std;
+
+int menu() {
+    int op;
+    do {
+        cout << "\nMenu de opciones";
+        cout << "\n1 - Registrar hotel";
+        cout << "\n2 - Mostrar registro de hotel";
+        cout << "\n3 - Modificar registro de hotel";
+        cout << "\n4 - Eliminar registro de hotel";
+        cout << "\n5 - Reporte de ubicacion de hoteles CAMPOS ELISEOS";
+        cout << "\n6 - Reporte de hoteles con desayuno";
+        cout << "\n7 - Reporte de hoteles con servicio de aeropuerto";
+        cout << "\n8 - Salir";
+        cout << "\nElegir opcion: ";
+        cin >> op;
+    } while (op < 1 || op >8);
+    return op;
+}
+int main()
+{
+    //arrhotel* objarreglo;
+    //objarreglo = new arrhotel();
+    arrhotel* objarreglo = new arrhotel();
+    hotel* objhotel;
+    string nombre;
+    int estrellas;
+    string ubicacion;
+    bool desayuno;
+    int telefono;
+    bool servicio;
+    while (true) {
+        system("cls");
+        int op;
+        op = menu();
+        if (op == 1) {
+            objhotel = new hotel();
+            cout << "\nNombre del hotel: "; cin >> nombre;
+            objhotel->setnombre(nombre);
+            cout << "\nUbicacion: "; cin >> ubicacion;
+            objhotel->setubicacion(ubicacion);
+            cout << "\nEstrellas: "; cin >> estrellas;
+            objhotel->setestrellas(estrellas);
+            cout << "\nDesayuno: "; cin >> desayuno;
+            objhotel->setdesayuno(desayuno);
+            cout << "\nTelefono: "; cin >> telefono;
+            objhotel->settelefono(telefono);
+            cout << "\nServicio: "; cin >> servicio;
+            objhotel->setservicio(servicio);
+
+            objarreglo->agregarhotel(objhotel);
+        }
+        if (op == 2) objarreglo->mostrar();
+        if (op == 3) {} //FALTA COMPLETAR
+        if (op == 4) {
+            int pos;
+            cout << "\nIngresar la posicion que desea eliminar: ";
+            cin >> pos;
+            objarreglo->eliminarpos(pos);
+        }
+        if (op == 5) { objarreglo->reporte1(); }
+        if (op == 6) { objarreglo->reporte2(); }
+        if (op == 7) { objarreglo->reporte3(); }
+        if (op == 8) { return 0; }
+        cin.get();
+        cin.ignore();
+    }
+}
+
+
+
+
+
+
+
+
+#pragma once
+#include <iostream>
+using namespace std;
+string hotelNombre[7] = { "Marriott","Meliá","Shell","Winston","Paris","Casa Andina","Trivago" };
+string hotelUbicacion[7] = { "Isla del cite","Lima","Campos Eliseo","Plaza Concordia","San Luis","Mont Martre","La Defensa" };
+class hotel {
+private:
+	string nombre;
+	int estrellas;
+	string ubicacion;
+	bool desayuno;
+	int telefono;
+	bool servicioa;
+public:
+	hotel() {
+		nombre = hotelNombre[rand()%7];
+		estrellas = rand() % 5 + 1;
+		ubicacion = hotelUbicacion[rand()%7];
+		desayuno = rand() % 2;
+		telefono = rand() % 80000 + 100000;
+		servicioa = rand() % 2;
+	}
+	~hotel(){}
+	//get
+	string getnombre() { return nombre; }
+	int getestrellas() { return estrellas; }
+	string getubicacion() { return ubicacion; }
+	bool getdesayuno() { return desayuno; }
+	int gettelefono() { return telefono; }
+	bool getservicio() { return servicioa; }
+
+	//set
+	void setnombre(string n) { nombre = n; }
+	void setestrellas(int e) { estrellas = e; }
+	void setubicacion(string u) { ubicacion = u; }
+	void setdesayuno(bool d) { desayuno = d; }
+	void settelefono(int t) { telefono = t; }
+	void setservicio(bool s) { servicioa = s; }
+	void tostring() {
+		cout << "Nombre: " << nombre << "\t";
+		cout << "Estrellas: " << estrellas << "\t";
+		cout << "Ubicacion: " << ubicacion << "\t";
+		cout << "Desayuno: ";
+		if (desayuno) cout << "Si" << "\t"; //if(desayuno ==1)
+		else cout << "No" << "\t";
+		cout << "Telefono: " << telefono << "\t";
+		if (servicioa==true) cout << "Si" << "\t";
+		else cout << "No" << "\t";
+		cout << "\n";
+	}
+};
+
+
+
+
+
+
+
+
+
+#pragma once
+#include "hotel.h"
+
+class arrhotel {
+private:
+	hotel** arreglo;
+	int N;
+public:
+	arrhotel() {
+		arreglo = nullptr;
+		N = 0;
+	}
+	~arrhotel(){}
+	void agregarhotel(hotel* obj) {
+		hotel** aux = new hotel * [N + 1];
+		for (int i = 0; i < N; i++) {
+			aux[i] = arreglo[i];
+		}
+		aux[N] = obj;
+		N++;
+		if (arreglo != nullptr)delete[] arreglo;
+		arreglo = aux;
+	}
+	void mostrar() {
+		for (int i = 0; i < N; i++) arreglo[i]->tostring();
+	}
+	void eliminarpos(int pos) {
+		for (int i = 0; i < N; i++) {
+			if (i == pos) {
+				for (int j = pos; j < N - 1; j++)
+					arreglo[j] = arreglo[j + 1];
+			}
+		}
+		N--;
+	}
+	hotel* modificar(int pos) {
+		for (int i = 0; i < N; i++) {
+			return arreglo[pos];
+		}
+	}
+	//mostrar reportes de las ubicaciones con los Campos Eliseos
+	void reporte1() {
+		for (int i = 0; i < N; i++) {
+			if (arreglo[i]->getubicacion() == "Campos Eiseos")
+				arreglo[i]->tostring();
+		}
+	}
+	//mostrar hoteles que brindan desayuno
+	void reporte2() {
+		for (int i = 0; i < N; i++) {
+			if (arreglo[i]->getdesayuno() == true)
+				arreglo[i]->tostring();
+		}
+	}
+	//mostrar hoteles que brindan servicio al aeropuerto
+	void reporte3() {
+		for (int i = 0; i < N; i++) {
+			if (arreglo[i]->getservicio())
+				arreglo[i]->tostring();
+		}
+	}
+};
