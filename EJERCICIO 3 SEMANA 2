@@ -1,0 +1,368 @@
+#include "pch.h"
+#include "ListaContactos.h"
+#include <iostream>
+
+using namespace std;
+using namespace System;
+
+int Menu()
+{
+	int opcion;
+
+	do
+	{
+		cout << "---------------------MENU------------------------";
+		cout << "\n1. Agregar contacto                            ";
+		cout << "\n2. Mostrar contactos                           ";
+		cout << "\n3. Modificar contacto                          ";
+		cout << "\n4. Eliminar un contacto                        ";
+		cout << "\n5. Reporte de contactos que cumplen años en mayo                  ";
+		cout << "\n6. Reporte de contactos que son varones        ";
+		cout << "\n7. Reporte de contactos que tienen red social Facebook y WhatsApp        ";
+		cout << "\n8. Salir";
+
+		cout << "\n\nElegir opcion: "; cin >> opcion;
+
+	} while (opcion < 1 || opcion > 8);
+
+	return opcion;
+}
+
+int main()
+{
+	ListaContactos* objArreglo = new ListaContactos();
+	Contacto* objContacto;
+
+	string nombre;
+	int telefono;
+	char sexo;
+	string facultad;
+	int FDN;
+	string email;
+	bool RS; //(1: WHATSAPP Y FACEBOOK    0: NINGUNA RED SOCIAL)
+
+	while (true)
+	{
+		system("cls");
+
+		int opcion = Menu();
+
+		if (opcion == 1)
+		{
+
+			objContacto = new Contacto();
+
+			cout << "Nombre: "; cin >> nombre;
+			objContacto->set_nombre(nombre);
+			cout << "Teléfono: "; cin >> telefono;
+			objContacto->set_telefono(telefono);
+			cout << "Sexo (M: Masculino, F: Femenino): "; cin >> sexo;
+			objContacto->set_sexo(sexo);
+			cout << "Facultad: "; cin >> facultad;
+			objContacto->set_facultad(facultad);
+			cout << "Mes de nacimiento (1, 2, 3, 4...etc): "; cin >> FDN;
+			objContacto->set_FDN(FDN);
+			cout << "Email: "; cin >> email;
+			objContacto->set_email(email);
+			cout << "Red Social (1: Facebook y Whatsapp  0: Sin redes sociales): "; cin >> RS;
+			objContacto->set_RS(RS);
+
+			objArreglo->agregarContacto(objContacto);
+		}
+		if (opcion == 2)
+		{
+			// MOSTRAR REGISTRO DE CONTACTOS
+
+			objArreglo->mostrarRegistro();
+
+		}
+		if (opcion == 3)
+		{
+			// MODIFICAR CONTACTO
+
+			int pos;
+			int opcionmodificar;
+
+			cout << "Posicion a modificar: "; cin >> pos;
+
+			Contacto* objContacto = objArreglo->modificar(pos);
+
+			string nombre;
+			int telefono;
+			char sexo;
+			string facultad;
+			int FDN;
+			string email;
+			bool RS; //(1: WHATSAPP Y FACEBOOK    0: NINGUNA RED SOCIAL)
+
+			cout << "Que opcion desea modificar?" << endl;
+			cout << "1- Nombre" << endl;
+			cout << "2- Telefono" << endl;
+			cout << "3- Sexo" << endl;
+			cout << "4- Facultad" << endl;
+			cout << "5- Fecha de nacimiento: " << endl;
+			cout << "6- Email: " << endl;
+			cout << "7- Red Social: " << endl;
+			cout << "Elegir opcion: "; cin >> opcionmodificar;
+
+			switch (opcionmodificar)
+			{
+			case 1:
+				cout << "Nombre: (" << objContacto->get_nombre() << "): "; cin >> nombre;
+				objContacto->set_nombre(nombre);
+				break;
+			case 2:
+				cout << "Telefono: (" << objContacto->get_telefono() << "): "; cin >> telefono;
+				objContacto->set_telefono(telefono);
+				break;
+			case 3:
+				cout << "Sexo: (" << objContacto->get_sexo() << "): "; cin >> sexo;
+				objContacto->set_sexo(sexo);
+				break;
+			case 4:
+				cout << "Facultad: (" << objContacto->get_facultad() << "): "; cin >> facultad;
+				objContacto->set_facultad(facultad);
+				break;
+			case 5:
+				cout << "Fecha de nacimiento: (" << objContacto->get_FDN() << "): "; cin >> FDN;
+				objContacto->set_FDN(FDN);
+				break;
+			case 6:
+				cout << "Email: (" << objContacto->get_email() << "): "; cin >> email;
+				objContacto->set_email(email);
+				break;
+			case 7:
+				cout << "Red Social: (" << objContacto->get_RS() << "): "; cin >> RS;
+				objContacto->set_RS(RS);
+				break;
+			default:
+				cout << "Opcion invalida" << endl;
+				break;
+			}
+		}
+		if (opcion == 4)
+		{
+			int pos;
+			cout << "Posicion a eliminar: "; cin >> pos;
+
+			objArreglo->eliminarContacto(pos);
+		}
+		if (opcion == 5)
+		{
+			// reporte de contactos de mayo
+
+			objArreglo->reporteContactosMayo();
+		}
+		if (opcion == 6)
+		{ 
+			objArreglo->reporteContactosVarones();
+		}
+		if (opcion == 7)
+		{
+			objArreglo->reporteContactosconRS();
+		}
+		if (opcion == 8)
+		{
+			return 0;
+		}
+
+		cin.get();
+		cin.ignore();
+	}
+
+	return 0;
+}
+
+
+
+
+
+
+
+#pragma once
+#include <iostream>
+
+using namespace std;
+
+class Contacto
+{
+private:
+	string nombre;
+	int telefono;
+	char sexo;
+	string facultad;
+	int FDN;
+	string email;
+	bool RS; //(1: WHATSAPP Y FACEBOOK  0: NINGUNA RED SOCIAL)
+
+public:
+	Contacto()
+	{
+		nombre = "Abc";
+		telefono = 100 + rand() % (100000001 - 100000000);
+		RS = true;
+		facultad = "Abc";
+		FDN = 1 + rand() % (12 - 1);
+		email = "Abc";
+		sexo = 'A';
+	}
+
+	Contacto(string pnombre, int ptelefono, char psexo, string pfacultad, int pFDN, string pemail, bool pRS)
+	{
+		nombre = pnombre;
+		telefono = ptelefono;
+		sexo = psexo;
+		facultad = pfacultad;
+		FDN = pFDN;
+		email = pemail;
+		RS = pRS;
+	}
+
+	~Contacto() { }
+
+	void toString()
+	{
+		cout << "\n------------------------------";
+		cout << "\nNombre: " << nombre;
+		cout << "\nTelefono: " << telefono;
+		cout << "\nSexo (M: Masculino F: Femenino): " << sexo;
+		cout << "\nFacultad: " << facultad;
+		cout << "\nFecha de nacimiento: " << FDN;
+		cout << "\nEmail: " << email;
+		cout << "\nRed Social: ";
+		if (RS == true)
+		{
+			cout << "1";
+		}
+		else
+		{
+			cout << "0";
+		}
+	}
+
+	void set_nombre(string valor) { nombre = valor; }
+	void set_telefono(int valor) { telefono = valor; }
+	void set_sexo(char valor) { sexo = valor; }
+	void set_facultad(string valor) { facultad = valor; }
+	void set_FDN(int valor) { FDN = valor; }
+	void set_email(string valor) { email = valor; }
+	void set_RS(bool valor) { RS = valor; }
+
+	string get_nombre() { return nombre; }
+	int get_telefono() { return telefono; }
+	char get_sexo() { return sexo; }
+	string get_facultad() { return facultad; }
+	int get_FDN() { return FDN; }
+	string get_email() { return email; }
+	bool get_RS() { return  RS; }
+};
+
+
+
+
+
+
+
+
+
+#pragma once
+#include "Contacto.h"
+
+class ListaContactos
+{
+private:
+	Contacto** arreglo;
+	int N;
+
+public:
+	ListaContactos()
+	{
+		arreglo = nullptr;
+		N = 0;
+	}
+
+	~ListaContactos() { }
+
+	void agregarContacto(Contacto* objeto)
+	{
+		Contacto** aux = new Contacto * [N + 1];
+
+		for (int i = 0; i < N; i++)
+		{
+			aux[i] = arreglo[i];
+		}
+
+		aux[N] = objeto;
+
+		N = N + 1;
+
+		if (arreglo != nullptr) delete[] arreglo;
+
+		arreglo = aux;
+	}
+
+	void mostrarRegistro()
+	{
+		for (int i = 0; i < N; i++)
+		{
+			arreglo[i]->toString();
+		}
+	}
+
+	Contacto* modificar(int pos)
+	{
+		for (int i = 0; i < N; i++)
+		{
+			return arreglo[pos];
+		}
+	}
+
+	void eliminarContacto(int pos)
+	{
+		for (int i = 0; i < N; i++)
+		{
+			if (i == pos)
+			{
+				for (int j = pos; j < N - 1; j++)
+				{
+					arreglo[j] = arreglo[j + 1];
+				}
+			}
+		}
+
+		N = N - 1;
+	}
+
+	void reporteContactosVarones()
+	{
+		for (int i = 0; i < N; i++)
+		{
+			if (arreglo[i]->get_sexo() == 'M')
+			{
+				arreglo[i]->toString();
+			}
+		}
+	}
+
+	void reporteContactosconRS()
+	{
+		for (int i = 0; i < N; i++)
+		{
+			if (arreglo[i]->get_RS() == true )
+			{
+				arreglo[i]->toString();
+			}
+		}
+	}
+
+	void reporteContactosMayo()
+	{
+		for (int i = 0; i < N; i++)
+		{
+			if (arreglo[i]->get_FDN() == 5)
+		{
+				arreglo[i]->toString();
+			}
+		}
+	}
+}; 
