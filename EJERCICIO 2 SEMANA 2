@@ -1,0 +1,333 @@
+#include "pch.h"
+#include "ListaPlatos.h"
+#include <iostream>
+
+using namespace std;
+using namespace System;
+
+int Menu()
+{
+	int op;
+
+	do
+	{
+		cout << "---------------------MENU------------------------";
+		cout << "\n1. Agregar plato                               ";
+		cout << "\n2. Mostrar registro de los platos              ";
+		cout << "\n3. Modificar plato                             ";
+		cout << "\n4. Eliminar un plato                           ";
+		cout << "\n5. Reporte de platos picantes                  ";
+		cout << "\n6. Reporte de platos mas caros (mayor a S/ 100)";
+		cout << "\n7. Salir";
+
+		cout << "\n\nElegir opcion: "; cin >> op;
+
+	} while (op < 1 || op > 7);
+
+	return op;
+}
+
+int main()
+{
+	ListaPlatos* objArreglo = new ListaPlatos();
+	Plato* objPlato;
+
+	string nombre;
+	short temperatura; // 1: frio  2: caliente
+	bool picante;
+	int calorias;
+	int precio;
+
+	while (true)
+	{
+		system("cls");
+
+		int op = Menu();
+
+		if (op == 1)
+		{
+			// agregar plato
+
+			objPlato = new Plato();
+
+			cout << "Nombre: "; cin >> nombre;
+			objPlato->set_nombre(nombre);
+			cout << "Temperatura (1: frio, 2: caliente): "; cin >> temperatura;
+			objPlato->set_temperatura(temperatura);
+			cout << "Picante (0: No, 1: Si): "; cin >> picante;
+			objPlato->set_picante(picante);
+			cout << "Calorias: "; cin >> calorias;
+			objPlato->set_calorias(calorias);
+			cout << "Precio: "; cin >> precio;
+			objPlato->set_precio(precio);
+
+			objArreglo->agregarPlato(objPlato);
+		}
+		if (op == 2)
+		{
+			// mostrar registro de platos
+
+			objArreglo->mostrarRegistro();
+
+		}
+		if (op == 3)
+		{
+			// modificar plato
+
+			int pos;
+			int opmodificar;
+
+			cout << "Posicion a modificar: "; cin >> pos;
+
+			Plato* objPlato = objArreglo->modificar(pos);
+
+			string nombre;
+			short temperatura; // 1: frio  2: caliente
+			bool picante;
+			int calorias;
+			int precio;
+
+			cout << "Que opcion desea modificar?" << endl;
+			cout << "1- Nombre" << endl;
+			cout << "2- Temperatura" << endl;
+			cout << "3- Picante" << endl;
+			cout << "4- Calorias" << endl;
+			cout << "5- Precio" << endl;
+			cout << "Elegir opcion: "; cin >> opmodificar;
+
+			switch (opmodificar)
+			{
+			case 1:
+				cout << "Nombre: (" << objPlato->get_nombre() << "): "; cin >> nombre;
+				objPlato->set_nombre(nombre);
+				break;
+			case 2:
+				cout << "Temperatura (1: frio, 2: caliente): (" << objPlato->get_temperatura() << "): "; cin >> temperatura;
+				objPlato->set_temperatura(temperatura);
+				break;
+			case 3:
+				cout << "Picante (0: No, 1: Si): (" << objPlato->get_picante() << "): "; cin >> picante;
+				objPlato->set_picante(picante);
+				break;
+			case 4:
+				cout << "Calorias: (" << objPlato->get_calorias() << "): "; cin >> calorias;
+				objPlato->set_calorias(calorias);
+				break;
+			case 5:
+				cout << "Precio: (" << objPlato->get_precio() << "): "; cin >> precio;
+				objPlato->set_precio(precio);
+				break;
+			default:
+				cout << "Opcion invalida" << endl;
+				break;
+			}
+		}
+		if (op == 4)
+		{
+			// eliminar plato
+
+			int pos;
+			cout << "Posicion a eliminar: "; cin >> pos;
+
+			objArreglo->eliminarPlato(pos);
+		}
+		if (op == 5)
+		{
+			// reporte de platos picantes
+
+			objArreglo->reportePlatosPicantes();
+		}
+		if (op == 6)
+		{
+			// reporte de platos mas caros 
+
+			objArreglo->reportePlatosCaros();
+		}
+		if (op == 7)
+		{
+			return 0;
+		}
+
+		cin.get();
+		cin.ignore();
+	}
+
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+#pragma once
+#include "Plato.h"
+
+class ListaPlatos
+{
+private:
+	Plato** arreglo;
+	int N;
+
+public:
+	ListaPlatos()
+	{
+		arreglo = nullptr;
+		N = 0;
+	}
+
+	~ListaPlatos() { }
+
+	void agregarPlato(Plato* objeto)
+	{
+		Plato** aux = new Plato * [N + 1];
+
+		for (int i = 0; i < N; i++)
+		{
+			aux[i] = arreglo[i];
+		}
+
+		aux[N] = objeto;
+
+		N = N + 1;
+
+		if (arreglo != nullptr) delete[] arreglo;
+
+		arreglo = aux;
+	}
+
+	void mostrarRegistro()
+	{
+		for (int i = 0; i < N; i++)
+		{
+			arreglo[i]->toString();
+		}
+	}
+
+	Plato* modificar(int pos)
+	{
+		for (int i = 0; i < N; i++)
+		{
+			return arreglo[pos];
+		}
+	}
+
+	void eliminarPlato(int pos)
+	{
+		for (int i = 0; i < N; i++)
+		{
+			if (i == pos)
+			{
+				for (int j = pos; j < N - 1; j++)
+				{
+					arreglo[j] = arreglo[j + 1];
+				}
+			}
+		}
+
+		N = N - 1;
+	}
+
+	void reportePlatosPicantes()
+	{
+		for (int i = 0; i < N; i++)
+		{
+			if (arreglo[i]->get_picante() == true)
+			{
+				arreglo[i]->toString();
+			}
+		}
+	}
+
+	void reportePlatosCaros()
+	{
+		for (int i = 0; i < N; i++)
+		{
+			if (arreglo[i]->get_precio() > 100)
+			{
+				arreglo[i]->toString();
+			}
+		}
+	}
+};
+
+
+
+
+
+
+
+
+
+
+
+#pragma once
+#include <iostream>
+//#include <string>
+
+using namespace std;
+
+class Plato
+{
+private:
+	string nombre;
+	short temperatura; // 1: frio  2: caliente
+	bool picante;
+	int calorias;
+	int precio;
+
+public:
+	Plato()
+	{
+		nombre = "Abc";
+		temperatura = rand() % 2 + 1;
+		picante = true;
+		calorias = 100 + rand() % (1001 - 100); // numero random entre 100 y 1000
+		precio = 40 + rand() % (111 - 40); // numero random entre 110 y 40
+	}
+
+	Plato(string pnombre, short ptemperatura, bool ppicante, int pcalorias, int pprecio)
+	{
+		nombre = pnombre;
+		temperatura = ptemperatura;
+		picante = ppicante;
+		calorias = pcalorias;
+		precio = pprecio;
+	}
+
+	~Plato(){ }
+
+	void toString()
+	{
+		cout << "\n------------------------------";
+		cout << "\nNombre: " << nombre;
+		cout << "\nTemperatura: " << temperatura;
+		cout << "\nPicante: ";
+		if (picante == true)
+		{
+			cout << "Si";
+		}
+		else
+		{
+			cout << "No";
+		}
+		cout << "\nCalorias: " << calorias;
+		cout << "\nPrecio: " << precio;
+	}
+
+	void set_nombre(string valor) { nombre = valor; }
+	void set_temperatura(short valor) { temperatura = valor; }
+	void set_picante(bool valor) { picante = valor; }
+	void set_calorias(int valor) { calorias = valor; }
+	void set_precio(int valor) { precio = valor; }
+
+	string get_nombre() { return nombre; }
+	short get_temperatura() { return temperatura; }
+	bool get_picante() { return picante; }
+	int get_calorias() { return calorias; }
+	int get_precio() { return precio; }
+};
