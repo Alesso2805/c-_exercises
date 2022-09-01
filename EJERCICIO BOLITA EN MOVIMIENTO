@@ -1,0 +1,141 @@
+#include "pch.h"
+#include "Lanzador.h"
+#include <conio.h>
+using namespace System;
+
+
+int main()
+{
+    //tamaño de la consola
+    Console::SetWindowSize(80, 40);
+    Console::CursorVisible = false;
+    //dibuja el lanzador
+    Console::ForegroundColor = ConsoleColor::Red;
+    Console::SetCursorPosition(0, 20); cout << "#=";
+    Console::ForegroundColor = ConsoleColor::White;
+    //definir punteros
+    Lanzador* ObjetoLanzador;
+    Pelota* ObjetoPelota;
+    //crea el lanzador
+    ObjetoLanzador = new Lanzador();
+    while (true) {
+        if (_kbhit()) //detecta si e ha pulsado una tecla
+        {
+            char tecla = getch(); //capturar la tecla pulsada
+            if (tecla == 'l' || tecla == 'L') {
+                ObjetoPelota = new Pelota(); //crea la instancia
+                ObjetoLanzador->AgregarPelota(ObjetoPelota);
+            }
+        }
+        //Mostrar
+        if (ObjetoLanzador->getN() > 0) {
+            ObjetoLanzador->MostrarPelota();
+        }
+        _sleep(1); //CONTROLA VELOCIDAD
+    }
+    system("pause>0");
+    return 0;
+}
+
+
+
+
+
+
+#pragma once
+#include <iostream>
+using namespace System;
+using namespace std;
+class Pelota {
+private:
+	short x, y;
+	short dx, dy;
+	char forma;
+public:
+	Pelota();
+	~Pelota();
+	//métodos
+	void borrar();
+	void mover();
+	void dibujar();
+};
+
+Pelota::Pelota() {
+	x = 2;
+	y = 20;
+	dx = dy = 1;
+	forma = 79;//O
+}
+Pelota::~Pelota(){}
+//métodos
+void Pelota::borrar() {
+	Console::SetCursorPosition(x, y); cout << " ";
+}
+void Pelota::mover() {
+	if (x > 78 || x < 1) dx *= -1;
+	if (y > 38 || y < 1) dy *= -1;
+	x = x + dx;
+	y = y + dy;
+}
+void Pelota::dibujar() {
+	Console::SetCursorPosition(x, y); cout << forma;
+}
+
+
+
+
+
+
+
+
+
+#pragma once
+#include "Pelota.h"
+
+class Lanzador {
+private:
+	Pelota** arreglo;
+	int* N; //para el tamaño del arreglo
+public:
+	Lanzador();
+	~Lanzador();
+	//métodos
+	void AgregarPelota(Pelota* objeto);
+	void MostrarPelota();
+	int getN();
+};
+
+Lanzador::Lanzador() {
+	arreglo = nullptr;
+	N = new int;
+	*N = 0;
+}
+Lanzador::~Lanzador(){}
+//métodos
+void Lanzador::AgregarPelota(Pelota* objeto) {
+	//crea un arreglo temporal del mismo tipo y tamaño +1
+	Pelota** temporal = new Pelota * [*N + 1];
+	//copia too el arreglo al temporal
+	if (arreglo != nullptr) {
+		for (int i = 0; i < *N; i++)
+			temporal[i] = arreglo[i];
+	}
+	//agregar 1 nuevo elemento
+	temporal[*N] = objeto;
+	//actualiza el tamaño del arreglo
+	*N = *N + 1;
+	//elimina el arreglo original
+	if (arreglo != nullptr) delete arreglo;
+	arreglo = temporal;
+}
+void Lanzador::MostrarPelota() {
+	for (int i = 0; i < *N; i++) {
+		arreglo[i]->borrar();
+		arreglo[i]->mover();
+		arreglo[i]->dibujar();
+	}
+}
+int Lanzador::getN() { return *N; }
+
+
+
