@@ -1,0 +1,235 @@
+#include "pch.h"
+#include "MisFunciones.h"
+#include "Competencia.h"
+
+using namespace System;
+
+int main()
+{
+    srand((unsigned)time(NULL));
+    Console::CursorVisible = false;
+    Competencia* ObjetoCompetencia;
+
+    ObjetoCompetencia = new Competencia();
+    ObjetoCompetencia->inicia_competencia();
+    system("pause>0");
+    return 0;
+}
+
+
+
+
+
+
+
+#pragma once
+#include<iostream>
+using namespace System;
+using namespace std;
+
+class Llanta {
+private:
+	int x, y;
+	short forma;
+public:
+	Llanta(int px, int py, short pforma);
+	~Llanta();
+	void imprime_llanta();
+	void setX(int valor);
+
+};
+
+Llanta::Llanta(int px, int py, short pforma)
+{
+	x = px;
+	y = py;
+	forma = pforma;
+}
+Llanta::~Llanta(){}
+
+void Llanta::imprime_llanta() {
+	Console::SetCursorPosition(x, y); cout << (char)forma;
+}
+void Llanta::setX(int valor) {
+	x = valor;
+}
+
+
+
+
+
+
+
+#pragma once
+#include <iostream>
+using namespace std;
+using namespace System;
+class Chasis {
+private:
+	int x; 
+	int y;
+	short forma;
+public:
+	Chasis(int px, int py, short pforma);
+	~Chasis();
+	void imprime_chasis();
+	void setX(int valor);
+};
+
+Chasis::Chasis(int px, int py, short pforma) {
+	x = px;
+	y = py;
+	forma = pforma;
+}
+Chasis::~Chasis(){}
+void Chasis::imprime_chasis() {
+	Console::SetCursorPosition(x, y); cout << (char)forma;
+	Console::SetCursorPosition(x + 1, y); cout << (char)forma;
+	Console::SetCursorPosition(x + 2, y); cout << (char)forma;
+	Console::SetCursorPosition(x + 3, y); cout << (char)forma;
+}
+void Chasis::setX(int valor) {
+	x = valor;
+}
+
+
+
+
+
+
+
+#pragma once
+#include "Llanta.h"
+#include "Chasis.h"
+
+class Carro {
+private:
+    float x;
+    short y;
+    float dx;
+    Llanta* ObjLlanta;
+    Llanta** arreglo;
+    Chasis* ObjChasis;
+public:
+    Carro(float px, short py);
+    ~Carro();
+    void imprime_carro();
+    void mover_carro();
+    void borrar_carro();
+    float getX();
+};
+
+Carro::Carro(float px, short py) {
+    x = px;
+    y = py;
+    dx = 0.1 + (float)rand() / RAND_MAX;
+    arreglo = new Llanta * [4];
+    ObjLlanta = new Llanta(x, y, 254);
+    arreglo[0] = ObjLlanta;
+    ObjLlanta = new Llanta(x, y, 254);
+    arreglo[1] = ObjLlanta;
+    ObjLlanta = new Llanta(x, y + 2, 254);
+    arreglo[2] = ObjLlanta;
+    ObjLlanta = new Llanta(x + 2, y + 2, 254);
+    arreglo[3] = ObjLlanta;
+
+    ObjChasis = new Chasis(x, y + 1, 219);
+}
+Carro::~Carro() {}
+void Carro::imprime_carro() {
+    for (int i = 0; i < 4; i++)
+        arreglo[i]->imprime_llanta();
+    ObjChasis->imprime_chasis();
+}
+void Carro::mover_carro() {
+    x += dx;
+    arreglo[0]->setX(x);
+    arreglo[1]->setX(x + 2);
+    arreglo[2]->setX(x);
+    arreglo[3]->setX(x + 2);
+    ObjChasis->setX(x);
+}
+void Carro::borrar_carro() {
+    Console::SetCursorPosition(x, y); cout << "   ";
+    Console::SetCursorPosition(x, y+1); cout << "   ";
+    Console::SetCursorPosition(x, y+2); cout << "   ";
+    Console::SetCursorPosition(x, y+3); cout << "   ";
+}
+float Carro::getX() { return x; }
+
+
+
+
+
+
+#pragma once
+#include "Carro.h"
+
+class Competencia {
+private:
+	Carro** arreglo;
+	Carro* ObjCarro;
+	short meta;
+public:
+	Competencia();
+	~Competencia();
+	void inicia_competencia();
+	void dibuja_meta();
+};
+
+Competencia::Competencia() {
+	arreglo = new Carro * [3];
+	float posx;
+	short posy;
+	posx = 1;
+	posy = 1;
+	meta = 72;
+	for (int i = 0; i < 3; i++) {
+		ObjCarro = new Carro(posx, posy);
+		arreglo[i] = ObjCarro;
+		posy += 5;
+	}
+}
+Competencia::~Competencia(){}
+void Competencia::inicia_competencia() {
+	arreglo[0]->imprime_carro();
+	arreglo[1]->imprime_carro();
+	arreglo[2]->imprime_carro();
+	dibuja_meta();
+	short i = 0;
+
+	while (1) {
+		arreglo[i]->borrar_carro();
+		arreglo[i]->mover_carro();
+		arreglo[i]->imprime_carro();
+		i++;
+		if (i > 2)i = 0;
+		if (arreglo[i]->getX() > meta) {
+			movexy(30, 35); cout << "GANA EL CARRO " << i + 1;
+			movexy(20, 36); cout << "\nPresione una tecla para terminar...";
+			system("pause>0");
+			break;
+		}
+		_sleep(100);
+	}
+}
+void Competencia::dibuja_meta() {
+	for (int y = 1; y < 38; y++) {
+		Console::SetCursorPosition(meta, y); cout << (char)179;
+		y++;
+	}
+}
+
+
+
+
+
+
+
+
+
+#pragma once
+using namespace System;
+void movexy(short x, short y) {
+	Console::SetCursorPosition(x, y);
+}
