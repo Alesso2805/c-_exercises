@@ -164,7 +164,7 @@ public:
 			alfa = 0;
 			Agregar(new Beta());
 		}
-		if (nuevo->GetId == 2) { // aqui ID tine ID 2, beta aumenta
+		if (nuevo->GetID() == 2) { // aqui ID tine ID 2, beta aumenta
 			beta++; //beta aumenta en uno, para que cuando presione otra tecla
 		}
 		if (beta == 2) {
@@ -178,5 +178,24 @@ public:
 		aux[cant] = nuevo;
 		cant++;
 		arreglo = aux;
+	}
+	void Eliminar(Entidad* eliminado) {
+		Entidad** aux = new Entidad * [cant - 1];
+		int i;
+		for (i = 0; arreglo[i] != eliminado; i++)
+			aux[i] = arreglo[i];
+		for (int j = i; j < cant - 1; j++)
+			aux[j] = arreglo[j + 1];
+		delete eliminado;
+		cant--;
+		arreglo = aux;
+	}
+	void Borrar() {
+		for (int i = 0; i < cant; i++)
+			arreglo[i]->Borrar();
+	}
+
+	void Mover() {
+
 	}
 };
