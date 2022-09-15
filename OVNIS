@@ -1,0 +1,182 @@
+#include "pch.h"
+
+using namespace System;
+
+int main()
+{
+    return 0;
+}
+
+
+
+
+
+#pragma once
+#include <iostream>
+#include <conio.h>
+using namespace std;
+using namespace System;
+#define ANCHO 80
+#define ALTO 20
+class Entidad {
+protected:
+	int ID;
+	int x, y;
+	int ancho, alto;
+	ConsoleColor color;
+public:
+	int GetX() { return x; }
+	int GetY() { return y; }
+	int GetAncho() { return ancho; }
+	int GetAlto() { return alto; }
+	int GetID() { return ID; }
+
+	void SetX(int x) { this->x = x; }
+	void SetY(int y) { this->y = y; }
+	void SetAncho(int ancho) { this->ancho = ancho; }
+	void SetAlto(int alto) { this->alto = alto; }
+	void SetColor(ConsoleColor color) { this->color = color; }
+
+	void Borrar() {
+		for (int i = 0; i < alto; i++) {
+			for (int j = 0; j < ancho; j++) {
+				Console::SetCursorPosition(x + j, y + i);
+				cout << " ";
+			}
+		}
+	}
+	void Mover() { y++; }
+};
+
+
+
+
+
+
+#pragma once
+#include "Entidad.h"
+class Alfa: public Entidad {
+public:
+	Alfa() {
+		ID = 1;
+		x = 0; y = 0;
+		ancho = 21; alto = 5;
+		color = ConsoleColor::Red;
+	}
+
+	void Mostrar() {
+		Console::ForegroundColor = color;
+		Console::SetCursorPosition(x, y + 0); cout << "       _.---._       ";
+		Console::SetCursorPosition(x, y + 1); cout << "     .'       '.     ";
+		Console::SetCursorPosition(x, y + 2); cout << " _.-~===========~-._ ";
+		Console::SetCursorPosition(x, y + 3); cout << "(___________________)";
+		Console::SetCursorPosition(x, y + 4); cout << "      \\_______/     ";
+	}
+};
+
+
+
+
+
+
+
+#pragma once
+#include "Entidad.h"
+
+class Beta: public Entidad {
+public:
+	Beta() {
+		ID = 2;
+		ancho = 11; alto = 3;
+		x = (ANCHO / 2) - (ancho / 2);
+		y = 0;
+		color = ConsoleColor::Yellow;
+	}
+	void Mostrar() {
+		Console::ForegroundColor = color;
+		Console::SetCursorPosition(x, y + 0); cout << "   .---.   ";
+		Console::SetCursorPosition(x, y + 1); cout << " _/__~0_\\_ ";
+		Console::SetCursorPosition(x, y + 2); cout << "(_________)";
+	}
+};
+
+
+
+
+
+#pragma once
+#include "Entidad.h"
+
+class Gamma : public Entidad {
+public:
+	Gamma() {
+		ID = 3;
+		ancho = 19; alto = 10;
+		x = ANCHO - ancho;
+		y = 0;
+		color = ConsoleColor::Green;
+	}
+	void Mostrar() {
+		Console::ForegroundColor = color;
+		Console::SetCursorPosition(x, y + 0); cout << "         .         ";
+		Console::SetCursorPosition(x, y + 1); cout << "         |         ";
+		Console::SetCursorPosition(x, y + 2); cout << "     .-\" ^ \"-.     ";
+		Console::SetCursorPosition(x, y + 3); cout << "    /_......._\\    ";
+		Console::SetCursorPosition(x, y + 4); cout << " .-\"`         `\"-.";
+		Console::SetCursorPosition(x, y + 5); cout << "(  ooo  ooo  ooo  )";
+		Console::SetCursorPosition(x, y + 6); cout << " '-.,_________,.-' ";
+		Console::SetCursorPosition(x, y + 7); cout << "     /       \\     ";
+		Console::SetCursorPosition(x, y + 8); cout << "   _/         \\_   ";
+		Console::SetCursorPosition(x, y + 9); cout << "  `\"`         `\"`";
+	}
+};
+
+
+
+
+
+#pragma once
+#include "Entidad.h"
+#include "Alfa.h"
+#include "Beta.h"
+#include "Gamma.h"
+
+class ArregloEntidad {
+private:
+	int cant;
+	Entidad** arreglo;
+	int alfa, beta;
+public:
+	ArregloEntidad() {
+		cant = 0;
+		alfa = beta = 0;
+	}
+	~ArregloEntidad() {
+		for (int i = 0; i < cant; i++)
+			delete arreglo[i];
+		delete[] arreglo;
+	}
+
+	void Agregar(Entidad* nuevo) {
+		if (nuevo->GetID() == 1)     // si pasa con el ID1 va aumentar un alfa
+			alfa++;
+		if (alfa == 2) { //aqui alfa se convierte en alfa=0, ID=2
+			alfa = 0;
+			Agregar(new Beta());
+		}
+		if (nuevo->GetId == 2) { // aqui ID tine ID 2, beta aumenta
+			beta++; //beta aumenta en uno, para que cuando presione otra tecla
+		}
+		if (beta == 2) {
+			beta = 0;
+			Agregar(new Gamma());
+		}
+
+		Entidad** aux = new Entidad * [cant + 1];
+		for (int i = 0; i < cant; i++)
+			aux[i] = arreglo[i];
+		aux[cant] = nuevo;
+		cant++;
+		arreglo = aux;
+	}
+};
