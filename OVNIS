@@ -1,9 +1,33 @@
 #include "pch.h"
-
+#include "ArregloEntidad.h"
 using namespace System;
 
 int main()
 {
+    Console::SetWindowSize(ANCHO, ALTO);
+    Console::CursorVisible = false;
+    ArregloEntidad* obj = new ArregloEntidad();
+    Console::SetCursorPosition(ANCHO / 2 - 5, ALTO / 2);
+    cout << "\nComienza la invasi" << char(162) << "n";
+    getch();
+    system("cls");
+    while (true) {
+        if (_kbhit()) {
+            char tecla = toupper(_getch());
+            if (tecla == 'A')
+                obj->Agregar(new Alfa());
+        }
+        obj->Borrar();
+        obj->Mover();
+        obj->Mostrar();
+        if (obj->GetCantidad() >= 20) break;
+
+        _sleep(200);
+    }
+    system("cls");
+    Console::SetCursorPosition(ANCHO / 2 - 11, ALTO / 2);
+    cout << "\nHemos sido invadidos...";
+    _sleep(8000);
     return 0;
 }
 
@@ -196,6 +220,24 @@ public:
 	}
 
 	void Mover() {
-
+		for (int i = 0; i < cant; i++) {
+			if (arreglo[i]->GetY() + arreglo[i]->GetAlto() + 1 == ALTO) {
+				arreglo[i]->Borrar();
+				Eliminar(arreglo[i]);
+			}
+		}
+		for (int i = 0; i < cant; i++)
+			arreglo[i]->Mover();
 	}
+
+	void Mostrar() {
+		for (int i = 0; i < cant; i++) {
+			switch (arreglo[i]->GetID()) {
+			case 1: ((Alfa*)arreglo[i])->Mostrar(); break;
+			case 2: ((Beta*)arreglo[i])->Mostrar(); break;
+			case 3: ((Gamma*)arreglo[i])->Mostrar(); break;
+			}
+		}
+	}
+	int GetCantidad() { return cant; }
 };
