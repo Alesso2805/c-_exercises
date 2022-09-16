@@ -1,0 +1,354 @@
+#include "pch.h"
+#include "ArregloEntidad.h"
+using namespace System;
+
+int main()
+{
+    srand(time(NULL));
+    Console::SetWindowSize(ANCHO, ALTO);
+    Console::CursorVisible = false;
+    ArregloEntidad* obj = new ArregloEntidad();
+    while (true) {
+        if (_kbhit()) {
+            char tecla = getch();
+            switch (tecla) {
+            case '1': obj->Agregar(new Avion1()); break;
+            case '2': obj->Agregar(new Avion2()); break;
+            case '3': obj->Agregar(new Avion3()); break;
+            case '4': obj->Agregar(new Avion4()); break;
+            case '5': obj->Agregar(new Avion5()); break;
+            case '6': obj->Agregar(new Avion6()); break;
+            case '7': obj->Agregar(new Avion7()); break;
+            case '8': obj->Agregar(new Avion8()); break;
+            case '9': obj->Agregar(new Avion9()); break;
+            case '0': obj->Eliminar(0); break;
+            default:break;
+            }
+        }
+        obj->Borrar();
+        obj->Mover();
+        obj->Mostrar();
+        _sleep(200);
+    }
+    return 0;
+}
+
+
+
+
+#pragma once
+#include<iostream>
+#include <conio.h>
+#include<time.h>
+using namespace std;
+using namespace System;
+#define ANCHO 80
+#define ALTO 20
+
+class Entidad {
+protected:
+	//int ID
+	int x, y;
+	int dx, dy;
+	int alto, ancho;
+	ConsoleColor color;
+public:
+	Entidad() {
+		dx = rand() % 5 + 1;
+		dy = rand() % 5 + 1;
+		color = (ConsoleColor)(rand() % 15 + 1);
+	}
+
+	int GetX() { return x; }
+	int GetY() { return y; }
+	int GetDX() { return dx; }
+	int GetDY() { return dy; }
+	int GetAlto() { return alto; }
+	int GetAncho() { return ancho; }
+
+	void Setx(int x) { this->x = x; }
+	void SetY(int y) { this->y = y; }
+	void SetDX(int dx) { this->dx = dx; }
+	void SetDY(int dy) { this->dy = dy; }
+	void SetAlto(int alto) { this->alto = alto; }
+	void SetAncho(int ancho) { this->ancho = ancho; }
+
+	void Borrar() {
+		for (int i = 0; i < alto; i++) {
+			for (int j = 0; j < ancho; j++) {
+				Console::SetCursorPosition(x + j, y + 1);
+				cout << " ";
+			}
+		}
+	}
+	void Mover() {
+		if (x + dx < 0 || x + ancho + dx >= ANCHO)
+			dx *= -1;
+		if (y + dy < 0 || y + alto + dy >= ALTO)
+			dy *= -1;
+
+		x += dx;
+		y += dy;
+	}
+	virtual void Mostrar(){}
+};
+
+
+
+
+#pragma once
+#include"Entidad.h"
+class Avion1 : public Entidad {
+public:
+	Avion1() :Entidad() { //utiliza las propiedades del constructor ENTIDAD
+		ancho = 11; alto = 3;
+		x = rand() % (ANCHO - ancho);
+		y = rand() % (ALTO - alto);
+	}
+
+	void Mostrar() {
+		Console::ForegroundColor = color;
+		Console::SetCursorPosition(x, y + 0); cout << "-----------";
+		Console::SetCursorPosition(x, y + 1); cout << "_\\__(_)__/_";
+		Console::SetCursorPosition(x, y + 2); cout << "   ./ \\.";
+	}
+};
+
+
+
+
+#pragma once
+#include"Entidad.h"
+class Avion2 : public Entidad {
+public:
+	Avion2() :Entidad() { //utiliza las propiedades del constructor ENTIDAD
+		ancho = 13; alto = 3;
+		x = rand() % (ANCHO - ancho);
+		y = rand() % (ALTO - alto);
+	}
+
+	void Mostrar() {
+		Console::ForegroundColor = color;
+		Console::SetCursorPosition(x, y + 0); cout << "    __!__    ";
+		Console::SetCursorPosition(x, y + 1); cout << "_____(_)_____";
+		Console::SetCursorPosition(x, y + 2); cout << "   !  !  !   ";
+	}
+};
+
+
+
+
+#pragma once
+#include"Entidad.h"
+class Avion3 : public Entidad {
+public:
+	Avion3() :Entidad() { //utiliza las propiedades del constructor ENTIDAD
+		ancho = 7; alto = 2;
+		x = rand() % (ANCHO - ancho);
+		y = rand() % (ALTO - alto);
+	}
+
+	void Mostrar() {
+		Console::ForegroundColor = color;
+		Console::SetCursorPosition(x, y + 0); cout << "   |   ";
+		Console::SetCursorPosition(x, y + 1); cout << "--=O=--";
+	}
+};
+
+
+
+
+#pragma once
+#include"Entidad.h"
+class Avion4 : public Entidad {
+public:
+	Avion4() :Entidad() { //utiliza las propiedades del constructor ENTIDAD
+		ancho = 17; alto = 3;
+		x = rand() % (ANCHO - ancho);
+		y = rand() % (ALTO - alto);
+	}
+
+	void Mostrar() {
+		Console::ForegroundColor = color;
+		Console::SetCursorPosition(x, y + 0); cout << "________|________";
+		Console::SetCursorPosition(x, y + 1); cout << " _|_____0_____|_ ";
+		Console::SetCursorPosition(x, y + 2); cout << "      |   |      ";
+	}
+};
+
+
+
+#pragma once
+#include"Entidad.h"
+class Avion5 : public Entidad {
+public:
+	Avion5() :Entidad() { //utiliza las propiedades del constructor ENTIDAD
+		ancho = 13; alto = 3;
+		x = rand() % (ANCHO - ancho);
+		y = rand() % (ALTO - alto);
+	}
+
+	void Mostrar() {
+		Console::ForegroundColor = color;
+		Console::SetCursorPosition(x, y + 0); cout << "    __!__    ";
+		Console::SetCursorPosition(x, y + 1); cout << "-----<*>-----";
+		Console::SetCursorPosition(x, y + 2); cout << "    o O o   ";
+	}
+};
+
+
+
+
+#pragma once
+#include"Entidad.h"
+class Avion6 : public Entidad {
+public:
+	Avion6() :Entidad() { //utiliza las propiedades del constructor ENTIDAD
+		ancho = 17; alto = 2;
+		x = rand() % (ANCHO - ancho);
+		y = rand() % (ALTO - alto);
+	}
+
+	void Mostrar() {
+		Console::ForegroundColor = color;
+		Console::SetCursorPosition(x, y + 0); cout << "      \\ . /  ";
+		Console::SetCursorPosition(x, y + 1); cout << ".______(*)______.";
+	}
+};
+
+
+
+
+#pragma once
+#include"Entidad.h"
+class Avion7 : public Entidad {
+public:
+	Avion7() : Entidad() { //utiliza las propiedades del constructor ENTIDAD
+		ancho = 19; alto = 3;
+		x = rand() % (ANCHO - ancho);
+		y = rand() % (ALTO - alto);
+	}
+
+	void Mostrar() {
+		Console::ForegroundColor = color;
+		Console::SetCursorPosition(x, y + 0); cout << "       __|__       ";
+		Console::SetCursorPosition(x, y + 1); cout << "________(*)________";
+		Console::SetCursorPosition(x, y + 2); cout << "       o/ \\o  ";
+	}
+};
+
+
+
+
+#pragma once
+#include"Entidad.h"
+class Avion8 : public Entidad {
+public:
+	Avion8() :Entidad() { //utiliza las propiedades del constructor ENTIDAD
+		ancho = 17; alto = 4;
+		x = rand() % (ANCHO - ancho);
+		y = rand() % (ALTO - alto);
+	}
+
+	void Mostrar() {
+		Console::ForegroundColor = color;
+		Console::SetCursorPosition(x, y + 0); cout << "        .        ";
+		Console::SetCursorPosition(x, y + 1); cout << "._______|_______.";
+		Console::SetCursorPosition(x, y + 2); cout << "      \\(*)/";
+		Console::SetCursorPosition(x, y + 3); cout << "      o/ \\o  ";
+	}
+};
+
+
+
+#pragma once
+#include"Entidad.h"
+class Avion9 : public Entidad {
+public:
+	Avion9() :Entidad() { //utiliza las propiedades del constructor ENTIDAD
+		ancho = 16; alto = 4;
+		x = rand() % (ANCHO - ancho);
+		y = rand() % (ALTO - alto);
+	}
+
+	void Mostrar() {
+		Console::ForegroundColor = color;
+		Console::SetCursorPosition(x, y + 0); cout << "   ____       _ ";
+		Console::SetCursorPosition(x, y + 1); cout << "| __\\_\\_o____/_|";
+		Console::SetCursorPosition(x, y + 2); cout << "<[___\\_\\_-----< ";
+		Console::SetCursorPosition(x, y + 3); cout << "|               ";
+	}
+};
+
+
+#pragma once
+#include "Entidad.h"
+#include "Avion1.h"
+#include "Avion2.h"
+#include "Avion3.h"
+#include "Avion4.h"
+#include "Avion5.h"
+#include "Avion6.h"
+#include "Avion7.h"
+#include "Avion8.h"
+#include "Avion9.h"
+
+class ArregloEntidad{
+private:
+	int cant;
+	Entidad** arreglo;
+public:
+	ArregloEntidad() {
+		cant = 0;
+	}
+	~ArregloEntidad() {
+		for (int i = 0; i < cant; i++)
+			delete arreglo[i];
+		delete[]arreglo;
+	}
+	void Agregar(Entidad * nuevo) {
+		Entidad** aux = new Entidad * [cant + 1];
+		for (int i = 0; i < cant; i++)
+			aux[i] = arreglo[i];
+		aux[cant] = nuevo;
+		cant++;
+		arreglo = aux;
+	}
+
+	void Eliminar(Entidad* eliminado) {
+		Entidad** aux = new Entidad * [cant - 1];
+		int i;
+		for (i = 0; arreglo[i] != eliminado; i++) //copiando los valores hasta encontrar eliminado
+			aux[i] = arreglo[i];
+		for (int j = i; j < cant - 1; j++)
+			aux[j] = aux[j + 1]; //chanca el valor anterior
+		delete eliminado;
+		cant--;
+		arreglo = aux;
+	}
+
+	void Eliminar(int pos) {
+		if (pos < cant) {
+			arreglo[pos]->Borrar();
+			Eliminar(arreglo[pos]);
+		}
+	}
+
+	void Borrar() {
+		for (int i = 0; i < cant; i++)
+			arreglo[i]->Borrar();
+	}
+
+	void Mover() {
+		for (int i = 0; i < cant; i++)
+			arreglo[i]->Mover();
+	}
+
+	void Mostrar() {
+		for (int i = 0; i < cant; i++)
+			arreglo[i]->Mostrar();
+	}
+};
+
+
+
