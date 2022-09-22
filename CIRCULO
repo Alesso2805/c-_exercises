@@ -1,0 +1,133 @@
+#include "pch.h"
+#include <conio.h>
+#include "CCirculo.h"
+#include "CCilindro.h"
+#include "CCilindroHueco.h"
+
+double obtenerDato() {
+	double x;
+	cin >> x;
+	return x;
+}
+
+int main() {
+	CCilindroHueco* obj1;
+	double r, h, i;
+	cout << "Ingrese el radio: ";
+	r = obtenerDato();
+	cout << "Ingrese la altura: ";
+	h = obtenerDato();
+	cout << "Ingrese el radio menor: ";
+	i = obtenerDato();
+	obj1 = new CCilindroHueco(r, h, i);
+	cout << "Area del Cilindro Hueco es: " << obj1->AreadelCilindroHueco() << endl;
+	cout << "Volumen del Cilindro Hueco es: " << obj1->VolumendelCilindroHueco() << endl;
+	cout << "========================" << endl;
+	cout << "Area del Cilindro: " << obj1->AreadelCilindro() << endl;
+	cout << "Volumen del Cilindro: " << obj1->VolumendelCilindro() << endl;
+	cout << "========================" << endl;
+	cout << "Longitud del circulo: " << obj1->Longitud() << endl;
+	cout << "Area del circulo: " << obj1->AreadelCirculo() << endl;
+	getch();
+	return 0;
+}
+
+
+#pragma once
+#include <iostream>
+using namespace std;
+
+class CCirculo
+{
+protected:
+	double r;
+public:
+	CCirculo(double r);
+	~CCirculo();
+	double AreadelCirculo();
+	double Longitud();
+};
+
+//-----------------------------CICULO----------------------------------
+
+CCirculo::CCirculo(double r) {
+	this->r = r;
+}
+
+CCirculo::~CCirculo(){}
+
+double CCirculo::AreadelCirculo() {
+	return(3.146 * r * r);
+}
+
+double CCirculo::Longitud() {
+	return(2 * 3.1416 * r);
+}
+
+
+
+#pragma once
+#include "CCirculo.h"
+#include <iostream>
+using namespace std;
+
+class CCilindro : public CCirculo
+{
+protected:
+	double h;
+public:
+	CCilindro(double r, double h);
+	~CCilindro();
+	double AreadelCilindro();
+	double VolumendelCilindro();
+};
+
+
+//-----------------------------CILINDRO------------------------
+
+CCilindro::CCilindro(double r, double h) :CCirculo(r) {//INVOCA AL CONSTRUCTOR DEL PADRE
+	this->h = h;
+}
+
+CCilindro::~CCilindro(){}
+
+double CCilindro::AreadelCilindro() {
+	return(Longitud() * h + 2 * AreadelCirculo());
+}
+
+double CCilindro::VolumendelCilindro() {
+	return(AreadelCirculo() * h);
+}
+
+
+#pragma once
+#include "CCilindro.h"
+#include <iostream>
+using namespace std;
+
+class CCilindroHueco : public CCilindro
+{
+protected:
+	double i; //--- radio menor
+public:
+	CCilindroHueco(double r, double i, double h);
+	~CCilindroHueco();
+	double AreadelCilindroHueco();
+	double VolumendelCilindroHueco();
+};
+
+//------------------------------CILINDRO HUECO---------------------------------------
+
+CCilindroHueco::CCilindroHueco(double r, double i, double h) :CCilindro(r, h) { //invoca al constructor de la clase PADRE
+	this->i = i;
+}
+
+CCilindroHueco::~CCilindroHueco(){}
+
+double CCilindroHueco::AreadelCilindroHueco() {
+	return(AreadelCilindro() + 2 * 3.1416 * h * i - 2 * 3.1416 * i * i);
+}
+
+double CCilindroHueco::VolumendelCilindroHueco() {
+	return(VolumendelCilindro() - 3.1416 * i * i * h);
+}
