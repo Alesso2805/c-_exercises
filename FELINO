@@ -1,0 +1,102 @@
+#include "pch.h"
+#include"Leon.h"
+using namespace System;
+
+int main()
+{
+    Leon* objetoLeon;
+    Leon* objetoLeon1;
+    //instanciar el objeto
+    objetoLeon = new Leon();
+    objetoLeon1 = new Leon(60.5);
+
+    cout << "\nEl Leon:";
+    objetoLeon->cazar();
+    cout << "\nTiene: " << objetoLeon->get_patas() << " patas";
+    cout << "\nSus colmillos miden: " << objetoLeon->get_long_colmillos();
+
+    cout << "\nEl leon 1: ";
+    cout << "\nSu velocidad es: " << objetoLeon1->get_velocidad();
+    cin.get();
+    cin.ignore();
+    return 0;
+}
+
+
+
+#pragma once
+#include <iostream>
+using namespace std;
+class Felino {
+protected:
+	string pelaje;
+	string garras;
+	double long_colmillos;
+	short patas;
+	double altura;
+	double velocidad;
+	short fuerza;
+	double long_cola;
+public:
+	Felino();
+	Felino(double pvelocidad);
+	~Felino();
+	void dormir();
+	void comer();
+	void jugar();
+	void saltar();
+	void cazar();
+	void oler();
+	//MÉTODO DE ACCESO
+	short get_patas();
+	double get_long_colmillos();
+};
+
+Felino::Felino() {
+	this->pelaje = "por definir";
+	this->garras = "por definir";
+	this->long_colmillos = 0.0;
+	this->patas = 4;
+	this->altura = 0.0;
+	this->velocidad = 0.0;
+	this->fuerza = 0;
+	this->long_cola = 00.0;
+}
+Felino::Felino(double pvelocidad) {
+	this->velocidad = pvelocidad;
+}
+Felino::~Felino(){}
+void Felino::dormir() { cout << "\n Esta en plena siesta..."; }
+void Felino::comer() { cout << "\nEsta en pleno banquete"; }
+void Felino::jugar() { cout << "\nEsta jugando..."; }
+void Felino::saltar() { cout << "\nEstan saltando..."; }
+void Felino::cazar() { cout << "\nEsta cazando..."; }
+void Felino::oler() { cout << "\nEsta preparando su pollada"; }
+//MÉTODO DE ACCESO
+short Felino::get_patas() { return patas; }
+double Felino::get_long_colmillos() { return long_colmillos; }
+
+
+#pragma once
+#include "Felino.h"
+
+class Leon : public Felino {//indicando qu el lon es clase derivada
+protected:
+	string melena;
+public:
+	Leon();
+	Leon(double pvelocidad);
+	~Leon();
+	//metodo de acceo
+	double get_velocidad();
+};
+
+//IMPLEMNTACION
+Leon::Leon() {
+	melena = "\nTine una gran melena";
+	long_colmillos = 5.3;
+}
+Leon::Leon(double pvelocidad) :Felino(pvelocidad) {}//invoca al constructor padre
+Leon::~Leon(){}
+//metodo de acceso
+double Leon::get_velocidad() { return velocidad; }
