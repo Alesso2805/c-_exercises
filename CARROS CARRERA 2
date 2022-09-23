@@ -1,0 +1,206 @@
+#include "pch.h"
+#include "Carrera.h"
+using namespace System;
+
+int main()
+{
+    Console::SetWindowSize(80, 40);
+    Console::CursorVisible = false;
+    //deinir variable objeto
+    Carrera* objetoCarrera;
+    //instanciar el objeto
+    objetoCarrera = new Carrera();
+    objetoCarrera->inicia_carrera();
+    system("pause>0");
+    return 0;
+}
+
+
+
+#pragma once
+#include <iostream>
+#include "time.h"
+using namespace std;
+using namespace System;
+
+class Vehiculo {
+protected:
+	double x;
+	int y;
+	double velocidad;//dx
+public:
+	Vehiculo(double px, int y);
+	~Vehiculo();
+	void borrar();
+	void mover();
+	void dibujar(short elegido);
+};
+
+//Implementacion
+
+Vehiculo::Vehiculo(double px, int py) {
+	this->x = px;
+	this->y = py;
+	velocidad = 0.1 + (rand() % 10) / 10.0;
+}
+Vehiculo::~Vehiculo(){}
+
+void Vehiculo::borrar() {
+	Console::SetCursorPosition(x, y + 0); cout << "      ";
+	Console::SetCursorPosition(x, y + 1); cout << "      ";
+	Console::SetCursorPosition(x, y + 2); cout << "      ";
+}
+void Vehiculo::mover() { x += velocidad; }
+void Vehiculo::dibujar(short elegido) {
+	//DYNAMIC
+	if (elegido == 1) {
+		Console::SetCursorPosition(x, y + 0); cout << "__   ";
+		Console::SetCursorPosition(x, y + 1); cout << "|_\\_";
+		Console::SetCursorPosition(x, y + 2); cout << "Lo_oJ";
+	}
+
+	if (elegido == 2) {
+		Console::SetCursorPosition(x, y + 0); cout << "  __       ";
+		Console::SetCursorPosition(x, y + 1); cout << " _| = \\__ ";
+		Console::SetCursorPosition(x, y + 2); cout << "/_o____o_\\";
+	}
+	//LEGER
+	if (elegido == 3) {
+		Console::SetCursorPosition(x, y + 0); cout << "   __     ";
+		Console::SetCursorPosition(x, y + 1); cout << ".-'--`-._ ";
+		Console::SetCursorPosition(x, y + 2); cout << "'-O---O--'";
+	}
+
+	if (elegido == 4) {
+		Console::SetCursorPosition(x, y + 0); cout << ".-'--`-._ ";
+		Console::SetCursorPosition(x, y + 1); cout << "'-O---O--'";
+	}
+}
+
+
+
+#pragma once
+#include "Vehiculo.h"
+
+class Dynamic : public Vehiculo {
+public:
+	Dynamic(double px, int py);
+	~Dynamic();
+	//método de acceso
+	double get_x();
+};
+
+Dynamic::Dynamic(double px, int py) :Vehiculo(px, py) {}
+Dynamic::~Dynamic(){}
+//método de acceso
+double Dynamic::get_x() { return this->x; }
+
+
+
+#pragma once
+#include "Vehiculo.h"
+
+class Leger : public Vehiculo {
+public:
+	Leger(double px, int py);
+	~Leger();
+	//método de acceso
+	double get_x();
+};
+
+Leger::Leger(double px, int py) :Vehiculo(px, py) {}
+Leger::~Leger() {}
+//método de acceso
+double Leger::get_x() { return this->x; }
+
+
+
+
+
+#pragma once
+#include "Dynamic.h"
+#include "Leger.h"
+#include <conio.h>
+
+class Carrera {
+private:
+	Dynamic* objetoDynamic;
+	Leger* objetoLeger;
+public:
+	Carrera();
+	~Carrera();
+	void inicia_carrera();
+	short meta;
+};
+
+Carrera::Carrera() {
+	srand(time(NULL));
+	//instanciar los objetos que participan en la carrera
+	objetoDynamic = new Dynamic(2, 2);
+	objetoLeger = new Leger(2, 10);
+	meta = 65;
+}
+Carrera::~Carrera() {
+	delete objetoDynamic;
+	delete objetoLeger;
+}
+void Carrera::inicia_carrera(){
+	bool hay_ganador = false;
+	short dynamic = rand() % 2 + 1;
+	short leger = rand() % 2 + 3;
+	short ranking[2] = { 0 }; //0->DYNAMIC   1->LEGER
+
+	while (true) 
+	{
+		objetoDynamic->borrar();
+		objetoDynamic->mover();
+		objetoDynamic->dibujar(dynamic);
+
+		objetoLeger->borrar();
+		objetoLeger->mover();
+		objetoLeger->dibujar(leger);
+
+		if (objetoDynamic->get_x() > meta) {
+			Console::SetCursorPosition(30, 35); cout << "\nGANA DYNAMIC...";
+			hay_ganador = true;
+			ranking[0]++; //ranking[0] = ranking[0] + 1
+			getch();
+		}
+
+		if (objetoLeger->get_x() > meta) {
+			Console::SetCursorPosition(30, 35); cout << "\nGANA LEGER...";
+			hay_ganador = true;
+			ranking[1]++; 
+			getch();
+		}
+
+		//SI HAY GANADOR
+		if (hay_ganador)//hay_ganador=true;
+		{
+			//reiniciar otra carrera
+			delete objetoDynamic;
+			objetoDynamic = nullptr;
+			delete objetoLeger;
+			objetoLeger = nullptr;
+			Console::Clear();
+			//Crear nuevamente los objetos
+			objetoDynamic = new Dynamic(2, 2);
+			objetoLeger = new Leger(2, 10);
+			hay_ganador = false;
+			//ELECCIONAR NUEVOS MODELOS O COMPETIDORES
+			dynamic = rand() % 2 + 1;
+			leger = rand() % 2 + 3;
+		}
+		if (_kbhit())//estamos en plena
+		{
+			char tecla = getch();
+			if (tecla == 27)break;
+		}
+		_sleep(100);
+	}//fin while
+	//REPORTE
+	cout << "\nRANKING...";
+	cout << "\nDYNAMIC HA GANADO:" << ranking[0] << "carreras";
+	cout << "\nLEGER HA GANADO:" << ranking[1] << "carreras";
+	system("pause>0");
+}
