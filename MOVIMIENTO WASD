@@ -1,0 +1,33 @@
+#include "pch.h"
+#include <iostream>
+#include <conio.h>
+using namespace System;
+using namespace std;
+int main()
+{
+    char cTecla;
+    int x = 8;
+    int y = 9;
+    Console::SetCursorPosition(x, y);
+    cout << char(219);
+    Console::SetCursorPosition(x+1, y+1);
+    cout << char(64);
+    while (cTecla = char(27)) {
+        cTecla = getch();
+        Console::SetCursorPosition(x, y);
+        cout << " ";
+        Console::SetCursorPosition(x+1, y+1);
+        cout << " ";
+
+        if (cTecla == char(65))--x;//A
+        if (cTecla == char(68))++x;//D
+        if (cTecla == char(87))--y;//W
+        if (cTecla == char(83))++y;//S
+
+        Console::SetCursorPosition(x, y);
+        cout << char(219);
+        Console::SetCursorPosition(x + 1, y + 1);
+        cout << char(64);
+    }
+    return 0;
+}
