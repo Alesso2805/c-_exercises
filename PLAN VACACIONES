@@ -1,0 +1,232 @@
+#include "pch.h"
+#include<ctime>
+#include<conio.h>
+#include"ArrPlanV.h"
+using namespace System;
+
+int main()
+{
+    srand(time(NULL));
+    ArrPlanV* arr = new ArrPlanV();
+    arr->agregarPlanV();
+    arr->agregarPlanV();
+    arr->agregarPlanV();
+    arr->agregarPlanV();
+    arr->agregarPlanV();
+    arr->agregarPlanV();
+    arr->agregarPlanV();
+    arr->agregarPlanV();
+    arr->agregarPlanV();
+    arr->agregarPlanV();
+    arr->agregarPlanV();
+    cout << "\nRporte de vacacions en rango de fechas";
+    cout << "\n--------------------------------------";
+    arr->Reporte1(1990, 2021);
+    getch();
+    system("cls");
+
+    cout << "\nReporte de vacaciones Hotel Westin";
+    cout << "\n----------------------------------";
+    arr->Reporte2("Westin");
+    getch();
+    system("cls");
+
+    cout << "\nReporte de Plan Vacaciones";
+    cout << "\n--------------------------";
+    arr->Reporte3();
+    getch();
+    system("cls");
+
+    cin.get();
+    cin.ignore();
+    return 0;
+}
+
+
+
+#pragma once
+#include <iostream>
+#include <string>
+using namespace std;
+
+string continentes[5] = { "America del Norte","America del Sur","Asia","Europa","Africa" };
+string nombreH[5] = { "Marriott","Westin","Perkin","Bighouse","LandingWay" };
+string tipoH[4] = { "Business","Airport","Suite","Resort" };
+
+class Hotel {
+protected:
+	string nombre;
+	string localizacion;
+	string tipo;
+	int estrellas;
+	int numeroH;
+public:
+	Hotel() {
+		nombre = nombreH[rand() % 5];
+		localizacion = continentes[rand() % 5];
+		tipo = tipoH[rand() % 4];
+		estrellas = rand() % 5 + 1;
+		numeroH = 20 + rand() % 81;
+	}
+	~Hotel(){}
+	string getNombre() { return nombre; }
+	string getlocalizacion() { return localizacion; }
+	string getTipo() { return tipo; }
+	int getEstrellas() { return estrellas; }
+	int getNumeroH() { return numeroH; }
+	void getInfoHotel() {
+		cout << "\nNombre: " << nombre;
+		cout << "\nLocalizacion: " << localizacion;
+		cout << "\nTipo: " << tipo;
+		cout << "\nEstrellas: " << estrellas;
+		cout << "\nNumero de habitacion: " << numeroH;
+	}
+};
+
+
+
+
+#pragma once
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Date {
+private:
+	int d, m, a;
+public:
+	Date() {
+		d = rand() % 31 + 1;
+		m = rand() % 12 + 1;
+		a = 1950 + rand() % 72;
+	}
+	~Date(){}
+	int getD() { return d; }
+	int getM() { return m; }
+	int getA() { return a; }
+	string getFechaCompleta() {
+		//d/m/a
+		string aux;
+		aux.append(to_string(d));
+		aux.append("/");
+		aux.append(to_string(m));
+		aux.append("/");
+		aux.append(to_string(a));
+		return aux;
+	}
+};
+
+
+
+#pragma once
+#include "Date.h"
+class Boleto {
+protected:
+	int codigo;
+	double precio;
+	Date date;
+public:
+	Boleto() {
+		codigo = rand() % 999999;
+		precio = 0.10 + rand() % 10000;
+		date = Date();
+	}
+	~Boleto(){}
+	int getDia() { return date.getD(); }
+	int getMes() { return date.getM(); }
+	int getAnio() { return date.getA(); }
+
+	void getInfoBoleto() {
+		cout << "\nCodigo: " << codigo;
+		cout << "\nPrecio: " << precio;
+		cout << "\nFecha: " << date.getFechaCompleta();
+	}
+};
+
+
+
+#pragma once
+#include"Boleto.h"
+#include"Hotel.h"
+class PlanVacaciones : public Boleto, public Hotel {
+private:
+	int duracion;
+	int numeroP;
+public:
+	PlanVacaciones() {
+		duracion = 1 + rand() % 15;
+		numeroP = 1 + rand() % 9;
+	}
+	~PlanVacaciones(){}
+	void getInfoPlanV() {
+		cout << "\nDuracion: " << duracion;
+		cout << "\nNumero de personas: " << numeroP;
+		getInfoHotel();
+		getInfoBoleto();
+	}
+};
+
+
+
+
+#pragma once
+#include <vector>
+#include "PlanVacaciones.h"
+class ArrPlanV {
+private:
+	vector<PlanVacaciones*> arr; //PlanVacaciones **arr
+public:
+	ArrPlanV(){}
+	~ArrPlanV(){}
+	void agregarPlanV() {
+		PlanVacaciones* obj = new PlanVacaciones();
+		arr.push_back(obj);//push back para agregar un objeto al final del vector
+	}
+	void borrarUltimoPlanV() {
+		arr.pop_back(); //pop back elimina el ultimo objeto del vector
+	}
+
+	//Mostrar la lista de vacaciones en un intervalo de fecha
+	void Reporte1 (int a1, int a2) {
+		if (a1 <= a2) {
+			for (int i = 0; i < arr.size(); i++) {
+				if (arr[i]->getAnio() >= a1 && arr[i]->getAnio() <= 2) {
+					arr[i]->getInfoPlanV();
+					cout << "\n";
+				}
+			}
+		}
+		else cout << "\nEl anio" << a1 << "debe ser menor al anio" << a2;
+	}
+
+	//Mostrar lista de vacaciones que tienen el mismo hotel
+	void Reporte2(string nombre) {
+		for (int i = 0; i < arr.size(); i++) {
+			if (arr[i]->getNombre() == nombre) {
+				arr[i]->getInfoPlanV();
+				cout << "\n";
+			}
+		}
+	}
+	
+	//Mostrar los boletos que tiene cada plan de viaje
+	void Reporte3() {
+		for(int i = 0; i < arr.size(); i++) {
+			arr[i]->getInfoBoleto();
+			cout << "\n";
+		}
+	}
+
+	void Reporte4() {
+		for (PlanVacaciones* p : arr) {
+			p->getInfoBoleto();
+			cout << "\n";
+		}
+	}
+
+	/*/void Reporte5() {
+		for (int& i : arr) {
+			cout << arr[i];
+		}
+	}*/
+};
