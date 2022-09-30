@@ -1,0 +1,96 @@
+#include "pch.h"
+
+using namespace System;
+
+int main()
+{
+    return 0;
+}
+
+
+#pragma once
+#include <iostream>
+using namespace std;
+
+class Triangulo {
+protected:
+	double b, h, l, m, n;
+public:
+	Triangulo(double b, double h, double l, double m, double n);
+	Triangulo(){}
+	~Triangulo();
+	double AreaTriangulo();
+	double PerimetroTriangulo();
+};
+
+Triangulo::Triangulo(double b, double h, double l, double m, double n) {
+	this->b = b;
+	this->h = h;
+	this->l = l;
+	this->m = m;
+	this->n = n;
+}
+Triangulo::~Triangulo(){}
+double Triangulo::AreaTriangulo() {
+	return((b * h) / 2);
+}
+double Triangulo::PerimetroTriangulo() {
+	return (l + m + n);
+}
+
+
+
+#pragma once
+#include <iostream>
+using namespace std;
+
+class Triangulo {
+protected:
+	double b, h, l, m, n;
+public:
+	Triangulo(double b, double h, double l, double m, double n);
+	Triangulo(){}
+	~Triangulo();
+	double AreaTriangulo();
+	double PerimetroTriangulo();
+};
+
+Triangulo::Triangulo(double b, double h, double l, double m, double n) {
+	this->b = b;
+	this->h = h;
+	this->l = l;
+	this->m = m;
+	this->n = n;
+}
+Triangulo::~Triangulo(){}
+double Triangulo::AreaTriangulo() {
+	return((b * h) / 2);
+}
+double Triangulo::PerimetroTriangulo() {
+	return (l + m + n);
+}
+
+
+#pragma once
+#include "Triangulo.h"
+#include <iostream>
+using namespace std;
+
+class Rectangulo :public Triangulo {
+public:
+	Rectangulo(double b, double h);
+	~Rectangulo();
+	double AreaRectangulo();
+	double PerimetroRectangulo();
+};
+
+Rectangulo::Rectangulo(double b, double h):Triangulo() {}
+Rectangulo::~Rectangulo(){}
+
+double Rectangulo::AreaRectangulo() {
+	return (b * h);
+}
+
+double Rectangulo::PerimetroRectangulo() {
+	return (2 * b + 2 * h);
+}
