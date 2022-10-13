@@ -1,0 +1,160 @@
+#pragma once
+
+namespace Project2 {
+
+	using namespace System;
+	using namespace System::ComponentModel;
+	using namespace System::Collections;
+	using namespace System::Windows::Forms;
+	using namespace System::Data;
+	using namespace System::Drawing;
+
+	/// <summary>
+	/// Summary for Form1
+	/// </summary>
+	public ref class Form1 : public System::Windows::Forms::Form
+	{
+	public:
+		Form1(void)
+		{
+			InitializeComponent();
+			//
+			//TODO: Add the constructor code here
+			//
+		}
+
+	protected:
+		/// <summary>
+		/// Clean up any resources being used.
+		/// </summary>
+		~Form1()
+		{
+			if (components)
+			{
+				delete components;
+			}
+		}
+	private: System::Windows::Forms::Button^ button1;
+	protected:
+	private: System::Windows::Forms::TextBox^ textBox1;
+	private: System::Windows::Forms::ComboBox^ comboBox1;
+	private: System::Windows::Forms::CheckedListBox^ checkedListBox1;
+	private: System::Windows::Forms::ImageList^ imageList1;
+	private: System::ComponentModel::BackgroundWorker^ backgroundWorker1;
+	private: System::Windows::Forms::Label^ label1;
+
+	private: System::ComponentModel::IContainer^ components;
+
+	private:
+		/// <summary>
+		/// Required designer variable.
+		/// </summary>
+
+
+#pragma region Windows Form Designer generated code
+		/// <summary>
+		/// Required method for Designer support - do not modify
+		/// the contents of this method with the code editor.
+		/// </summary>
+		void InitializeComponent(void)
+		{
+			this->components = (gcnew System::ComponentModel::Container());
+			this->button1 = (gcnew System::Windows::Forms::Button());
+			this->textBox1 = (gcnew System::Windows::Forms::TextBox());
+			this->comboBox1 = (gcnew System::Windows::Forms::ComboBox());
+			this->checkedListBox1 = (gcnew System::Windows::Forms::CheckedListBox());
+			this->imageList1 = (gcnew System::Windows::Forms::ImageList(this->components));
+			this->backgroundWorker1 = (gcnew System::ComponentModel::BackgroundWorker());
+			this->label1 = (gcnew System::Windows::Forms::Label());
+			this->SuspendLayout();
+			// 
+			// button1
+			// 
+			this->button1->Location = System::Drawing::Point(260, 69);
+			this->button1->Name = L"button1";
+			this->button1->Size = System::Drawing::Size(498, 21);
+			this->button1->TabIndex = 0;
+			this->button1->Text = L"Dibujar";
+			this->button1->UseVisualStyleBackColor = true;
+			// 
+			// textBox1
+			// 
+			this->textBox1->Location = System::Drawing::Point(47, 38);
+			this->textBox1->Name = L"textBox1";
+			this->textBox1->Size = System::Drawing::Size(160, 20);
+			this->textBox1->TabIndex = 1;
+			// 
+			// comboBox1
+			// 
+			this->comboBox1->FormattingEnabled = true;
+			this->comboBox1->Items->AddRange(gcnew cli::array< System::Object^  >(2) { L"Circulo", L"Rectángulo" });
+			this->comboBox1->Location = System::Drawing::Point(112, 69);
+			this->comboBox1->Name = L"comboBox1";
+			this->comboBox1->Size = System::Drawing::Size(121, 21);
+			this->comboBox1->TabIndex = 2;
+			this->comboBox1->SelectedIndexChanged += gcnew System::EventHandler(this, &Form1::comboBox1_SelectedIndexChanged);
+			// 
+			// checkedListBox1
+			// 
+			this->checkedListBox1->FormattingEnabled = true;
+			this->checkedListBox1->Location = System::Drawing::Point(407, 102);
+			this->checkedListBox1->Name = L"checkedListBox1";
+			this->checkedListBox1->Size = System::Drawing::Size(120, 94);
+			this->checkedListBox1->TabIndex = 3;
+			// 
+			// imageList1
+			// 
+			this->imageList1->ColorDepth = System::Windows::Forms::ColorDepth::Depth8Bit;
+			this->imageList1->ImageSize = System::Drawing::Size(16, 16);
+			this->imageList1->TransparentColor = System::Drawing::Color::Transparent;
+			// 
+			// label1
+			// 
+			this->label1->AutoSize = true;
+			this->label1->Location = System::Drawing::Point(44, 72);
+			this->label1->Name = L"label1";
+			this->label1->Size = System::Drawing::Size(62, 13);
+			this->label1->TabIndex = 4;
+			this->label1->Text = L"Elegir figura";
+			this->label1->Click += gcnew System::EventHandler(this, &Form1::label1_Click);
+			// 
+			// Form1
+			// 
+			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
+			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
+			this->BackColor = System::Drawing::SystemColors::AppWorkspace;
+			this->ClientSize = System::Drawing::Size(1001, 361);
+			this->Controls->Add(this->label1);
+			this->Controls->Add(this->checkedListBox1);
+			this->Controls->Add(this->comboBox1);
+			this->Controls->Add(this->textBox1);
+			this->Controls->Add(this->button1);
+			this->ForeColor = System::Drawing::SystemColors::ControlText;
+			this->Name = L"Form1";
+			this->Text = L"Form1";
+			this->Load += gcnew System::EventHandler(this, &Form1::Form1_Load);
+			this->ResumeLayout(false);
+			this->PerformLayout();
+
+		}
+#pragma endregion
+	private: System::Void Form1_Load(System::Object^ sender, System::EventArgs^ e) {
+		Random^ r = gcnew Random();
+		for (int i = 0; i < 10; i++) {
+			Button^ MiBoton = gcnew Button;
+			MiBoton->Left = r->Next(this->ClientSize.Width);
+			MiBoton->Top = r->Next(this->ClientSize.Height);
+			MiBoton->Width = 100;
+			MiBoton->Height = 25;
+			MiBoton->Text = "Hola";
+			MiBoton->Parent = this;
+		}
+	}
+	private: System::Void comboBox1_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
+	}
+	private: System::Void textBox2_TextChanged(System::Object^ sender, System::EventArgs^ e) {
+	}
+private: System::Void label1_Click(System::Object^ sender, System::EventArgs^ e) {
+}
+};
+}
