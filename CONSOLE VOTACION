@@ -1,0 +1,336 @@
+#include "MyForm.h"
+
+using namespace Project2;
+
+int main() {
+	Application::Run(gcnew MyForm());
+	return 0;
+}
+
+
+#pragma once
+#include "MyForm1.h"
+namespace Project2 {
+
+	using namespace System;
+	using namespace System::ComponentModel;
+	using namespace System::Collections;
+	using namespace System::Windows::Forms;
+	using namespace System::Data;
+	using namespace System::Drawing;
+
+	/// <summary>
+	/// Summary for MyForm
+	/// </summary>
+	public ref class MyForm : public System::Windows::Forms::Form
+	{
+	public:
+		MyForm(void)
+		{
+			InitializeComponent();
+			//
+			//TODO: Add the constructor code here
+			//
+		}
+
+	protected:
+		/// <summary>
+		/// Clean up any resources being used.
+		/// </summary>
+		~MyForm()
+		{
+			if (components)
+			{
+				delete components;
+			}
+		}
+	private: System::Windows::Forms::Label^ BtnNombre;
+	private: System::Windows::Forms::Button^ BtnPreguntar;
+	private: System::Windows::Forms::TextBox^ Nombre;
+
+	private: System::Windows::Forms::Label^ Resultado;
+	private: System::Windows::Forms::Timer^ timer1;
+	private: System::ComponentModel::IContainer^ components;
+	protected:
+
+	protected:
+
+
+
+	private:
+		/// <summary>
+		/// Required designer variable.
+		/// </summary>
+
+
+#pragma region Windows Form Designer generated code
+		/// <summary>
+		/// Required method for Designer support - do not modify
+		/// the contents of this method with the code editor.
+		/// </summary>
+		void InitializeComponent(void)
+		{
+			this->components = (gcnew System::ComponentModel::Container());
+			this->BtnNombre = (gcnew System::Windows::Forms::Label());
+			this->BtnPreguntar = (gcnew System::Windows::Forms::Button());
+			this->Nombre = (gcnew System::Windows::Forms::TextBox());
+			this->Resultado = (gcnew System::Windows::Forms::Label());
+			this->timer1 = (gcnew System::Windows::Forms::Timer(this->components));
+			this->SuspendLayout();
+			// 
+			// BtnNombre
+			// 
+			this->BtnNombre->AutoSize = true;
+			this->BtnNombre->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->BtnNombre->Location = System::Drawing::Point(164, 51);
+			this->BtnNombre->Name = L"BtnNombre";
+			this->BtnNombre->Size = System::Drawing::Size(91, 24);
+			this->BtnNombre->TabIndex = 0;
+			this->BtnNombre->Text = L"Nombre:";
+			this->BtnNombre->Click += gcnew System::EventHandler(this, &MyForm::label1_Click);
+			// 
+			// BtnPreguntar
+			// 
+			this->BtnPreguntar->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->BtnPreguntar->Location = System::Drawing::Point(143, 104);
+			this->BtnPreguntar->Name = L"BtnPreguntar";
+			this->BtnPreguntar->Size = System::Drawing::Size(133, 69);
+			this->BtnPreguntar->TabIndex = 1;
+			this->BtnPreguntar->Text = L"Preguntar";
+			this->BtnPreguntar->UseVisualStyleBackColor = true;
+			this->BtnPreguntar->Click += gcnew System::EventHandler(this, &MyForm::BtnPreguntar_Click);
+			// 
+			// Nombre
+			// 
+			this->Nombre->Location = System::Drawing::Point(155, 78);
+			this->Nombre->Name = L"Nombre";
+			this->Nombre->Size = System::Drawing::Size(100, 20);
+			this->Nombre->TabIndex = 2;
+			// 
+			// Resultado
+			// 
+			this->Resultado->AutoSize = true;
+			this->Resultado->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->Resultado->Location = System::Drawing::Point(151, 196);
+			this->Resultado->Name = L"Resultado";
+			this->Resultado->Size = System::Drawing::Size(103, 24);
+			this->Resultado->TabIndex = 3;
+			this->Resultado->Text = L"Resultado";
+			// 
+			// timer1
+			// 
+			this->timer1->Enabled = true;
+			this->timer1->Interval = 10000;
+			this->timer1->Tick += gcnew System::EventHandler(this, &MyForm::timer1_Tick);
+			// 
+			// MyForm
+			// 
+			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
+			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
+			this->ClientSize = System::Drawing::Size(442, 356);
+			this->Controls->Add(this->Resultado);
+			this->Controls->Add(this->Nombre);
+			this->Controls->Add(this->BtnPreguntar);
+			this->Controls->Add(this->BtnNombre);
+			this->Name = L"MyForm";
+			this->Text = L"MyForm";
+			this->ResumeLayout(false);
+			this->PerformLayout();
+
+		}
+#pragma endregion
+	private: System::Void label1_Click(System::Object^ sender, System::EventArgs^ e) {
+	}
+	private: System::Void BtnPreguntar_Click(System::Object^ sender, System::EventArgs^ e) {
+		MyForm1^ FrmVotacion = gcnew MyForm1();
+		FrmVotacion->MuestraNombre(Nombre->Text);
+		FrmVotacion->ShowDialog();
+		String^ rpta = FrmVotacion->retorna_voto();
+		Resultado->Text = Nombre->Text + " voto por el " + rpta;
+	}
+private: System::Void timer1_Tick(System::Object^ sender, System::EventArgs^ e) {
+	Nombre->Text = "";
+	Resultado->Text = "";
+}
+};
+}
+
+
+
+
+
+
+#pragma once
+
+namespace Project2 {
+
+	using namespace System;
+	using namespace System::ComponentModel;
+	using namespace System::Collections;
+	using namespace System::Windows::Forms;
+	using namespace System::Data;
+	using namespace System::Drawing;
+
+	/// <summary>
+	/// Summary for MyForm1
+	/// </summary>
+	public ref class MyForm1 : public System::Windows::Forms::Form
+	{
+	public:
+		MyForm1(void)
+		{
+			InitializeComponent();
+			//
+			//TODO: Add the constructor code here
+			//
+		}
+
+	protected:
+		/// <summary>
+		/// Clean up any resources being used.
+		/// </summary>
+		~MyForm1()
+		{
+			if (components)
+			{
+				delete components;
+			}
+		}
+	private: System::Windows::Forms::Label^ BtnVotacion;
+	protected:
+
+	private: System::Windows::Forms::Label^ BtnVoto;
+	private: System::Windows::Forms::Label^ LblNombre;
+
+
+	private: System::Windows::Forms::Button^ BtnSi;
+	private: System::Windows::Forms::Button^ BtnNo;
+
+	private: System::ComponentModel::IContainer^ components;
+
+	protected:
+
+	private:
+		/// <summary>
+		/// Required designer variable.
+		/// </summary>
+
+
+#pragma region Windows Form Designer generated code
+		/// <summary>
+		/// Required method for Designer support - do not modify
+		/// the contents of this method with the code editor.
+		/// </summary>
+		void InitializeComponent(void)
+		{
+			this->BtnVotacion = (gcnew System::Windows::Forms::Label());
+			this->BtnVoto = (gcnew System::Windows::Forms::Label());
+			this->LblNombre = (gcnew System::Windows::Forms::Label());
+			this->BtnSi = (gcnew System::Windows::Forms::Button());
+			this->BtnNo = (gcnew System::Windows::Forms::Button());
+			this->SuspendLayout();
+			// 
+			// BtnVotacion
+			// 
+			this->BtnVotacion->AutoSize = true;
+			this->BtnVotacion->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->BtnVotacion->Location = System::Drawing::Point(93, 28);
+			this->BtnVotacion->Name = L"BtnVotacion";
+			this->BtnVotacion->Size = System::Drawing::Size(92, 24);
+			this->BtnVotacion->TabIndex = 0;
+			this->BtnVotacion->Text = L"Votación";
+			// 
+			// BtnVoto
+			// 
+			this->BtnVoto->AutoSize = true;
+			this->BtnVoto->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->BtnVoto->Location = System::Drawing::Point(57, 97);
+			this->BtnVoto->Name = L"BtnVoto";
+			this->BtnVoto->Size = System::Drawing::Size(159, 24);
+			this->BtnVoto->TabIndex = 2;
+			this->BtnVoto->Text = L"Cuál es tu voto\?";
+			this->BtnVoto->Click += gcnew System::EventHandler(this, &MyForm1::label1_Click);
+			// 
+			// LblNombre
+			// 
+			this->LblNombre->AutoSize = true;
+			this->LblNombre->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->LblNombre->ForeColor = System::Drawing::Color::Red;
+			this->LblNombre->Location = System::Drawing::Point(105, 64);
+			this->LblNombre->Name = L"LblNombre";
+			this->LblNombre->Size = System::Drawing::Size(53, 24);
+			this->LblNombre->TabIndex = 3;
+			this->LblNombre->Text = L"Hola";
+			// 
+			// BtnSi
+			// 
+			this->BtnSi->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->BtnSi->Location = System::Drawing::Point(12, 142);
+			this->BtnSi->Name = L"BtnSi";
+			this->BtnSi->Size = System::Drawing::Size(97, 75);
+			this->BtnSi->TabIndex = 4;
+			this->BtnSi->Text = L"Sí";
+			this->BtnSi->UseVisualStyleBackColor = true;
+			this->BtnSi->Click += gcnew System::EventHandler(this, &MyForm1::BtnSi_Click);
+			// 
+			// BtnNo
+			// 
+			this->BtnNo->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->BtnNo->Location = System::Drawing::Point(159, 142);
+			this->BtnNo->Name = L"BtnNo";
+			this->BtnNo->Size = System::Drawing::Size(97, 75);
+			this->BtnNo->TabIndex = 5;
+			this->BtnNo->Text = L"No";
+			this->BtnNo->UseVisualStyleBackColor = true;
+			this->BtnNo->Click += gcnew System::EventHandler(this, &MyForm1::BtnNo_Click);
+			// 
+			// MyForm1
+			// 
+			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
+			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
+			this->ClientSize = System::Drawing::Size(284, 261);
+			this->Controls->Add(this->BtnNo);
+			this->Controls->Add(this->BtnSi);
+			this->Controls->Add(this->LblNombre);
+			this->Controls->Add(this->BtnVoto);
+			this->Controls->Add(this->BtnVotacion);
+			this->Name = L"MyForm1";
+			this->Text = L"MyForm1";
+			this->ResumeLayout(false);
+			this->PerformLayout();
+
+		}
+#pragma endregion
+
+		public:
+			short voto;
+			void MuestraNombre(String^ nombre) {
+				LblNombre->Text = "Hola " + nombre;
+			}
+
+			String^ retorna_voto() {
+				if (voto == 1) return "Sí";
+				if (voto == 2) return "No";
+			}
+	private: System::Void label1_Click(System::Object^ sender, System::EventArgs^ e) {
+	}
+	private: System::Void BtnSi_Click(System::Object^ sender, System::EventArgs^ e) {
+		voto = 1;
+		this->Close();
+	}
+private: System::Void BtnNo_Click(System::Object^ sender, System::EventArgs^ e) {
+	voto = 2;
+	this->Close();
+}
+private: System::Void timer1_Tick(System::Object^ sender, System::EventArgs^ e) {
+}
+};
+}
