@@ -1,0 +1,275 @@
+#pragma once
+
+namespace Project1 {
+
+	using namespace System;
+	using namespace System::ComponentModel;
+	using namespace System::Collections;
+	using namespace System::Windows::Forms;
+	using namespace System::Data;
+	using namespace System::Drawing;
+
+	/// <summary>
+	/// Summary for MyForm
+	/// </summary>
+	public ref class MyForm : public System::Windows::Forms::Form
+	{
+	public:
+		MyForm(void)
+		{
+			InitializeComponent();
+			//
+			//TODO: Add the constructor code here
+			//
+		}
+
+	protected:
+		/// <summary>
+		/// Clean up any resources being used.
+		/// </summary>
+		~MyForm()
+		{
+			if (components)
+			{
+				delete components;
+			}
+		}
+	private: System::Windows::Forms::TextBox^ Txt1;
+	private: System::Windows::Forms::TextBox^ Txt2;
+	private: System::Windows::Forms::Label^ label1;
+
+	private: System::Windows::Forms::Button^ BtnSuma;
+	private: System::Windows::Forms::TextBox^ TxtResultado;
+
+
+	private: System::Windows::Forms::Label^ label3;
+	private: System::Windows::Forms::Label^ label4;
+	private: System::Windows::Forms::Button^ BtnResta;
+	private: System::Windows::Forms::Button^ BtnMulti;
+	private: System::Windows::Forms::Button^ BtnDivi;
+
+
+
+	protected:
+
+
+	protected:
+
+	protected:
+
+
+	private:
+		/// <summary>
+		/// Required designer variable.
+		/// </summary>
+		System::ComponentModel::Container^ components;
+
+#pragma region Windows Form Designer generated code
+		/// <summary>
+		/// Required method for Designer support - do not modify
+		/// the contents of this method with the code editor.
+		/// </summary>
+		void InitializeComponent(void)
+		{
+			this->Txt1 = (gcnew System::Windows::Forms::TextBox());
+			this->Txt2 = (gcnew System::Windows::Forms::TextBox());
+			this->label1 = (gcnew System::Windows::Forms::Label());
+			this->BtnSuma = (gcnew System::Windows::Forms::Button());
+			this->TxtResultado = (gcnew System::Windows::Forms::TextBox());
+			this->label3 = (gcnew System::Windows::Forms::Label());
+			this->label4 = (gcnew System::Windows::Forms::Label());
+			this->BtnResta = (gcnew System::Windows::Forms::Button());
+			this->BtnMulti = (gcnew System::Windows::Forms::Button());
+			this->BtnDivi = (gcnew System::Windows::Forms::Button());
+			this->SuspendLayout();
+			// 
+			// Txt1
+			// 
+			this->Txt1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->Txt1->Location = System::Drawing::Point(126, 26);
+			this->Txt1->Name = L"Txt1";
+			this->Txt1->Size = System::Drawing::Size(428, 29);
+			this->Txt1->TabIndex = 0;
+			this->Txt1->TextChanged += gcnew System::EventHandler(this, &MyForm::textBox1_TextChanged);
+			// 
+			// Txt2
+			// 
+			this->Txt2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->Txt2->Location = System::Drawing::Point(126, 76);
+			this->Txt2->Name = L"Txt2";
+			this->Txt2->Size = System::Drawing::Size(428, 29);
+			this->Txt2->TabIndex = 1;
+			this->Txt2->TextChanged += gcnew System::EventHandler(this, &MyForm::Txt2_TextChanged);
+			// 
+			// label1
+			// 
+			this->label1->AutoSize = true;
+			this->label1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label1->Location = System::Drawing::Point(12, 21);
+			this->label1->Name = L"label1";
+			this->label1->Size = System::Drawing::Size(108, 24);
+			this->label1->TabIndex = 2;
+			this->label1->Text = L"Numero 1:";
+			this->label1->Click += gcnew System::EventHandler(this, &MyForm::label1_Click);
+			// 
+			// BtnSuma
+			// 
+			this->BtnSuma->BackColor = System::Drawing::Color::Cyan;
+			this->BtnSuma->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->BtnSuma->ForeColor = System::Drawing::SystemColors::ButtonHighlight;
+			this->BtnSuma->Location = System::Drawing::Point(58, 118);
+			this->BtnSuma->Name = L"BtnSuma";
+			this->BtnSuma->Size = System::Drawing::Size(100, 68);
+			this->BtnSuma->TabIndex = 4;
+			this->BtnSuma->Text = L"+";
+			this->BtnSuma->UseVisualStyleBackColor = false;
+			this->BtnSuma->Click += gcnew System::EventHandler(this, &MyForm::BtnSuma_Click);
+			// 
+			// TxtResultado
+			// 
+			this->TxtResultado->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->TxtResultado->Location = System::Drawing::Point(126, 206);
+			this->TxtResultado->Name = L"TxtResultado";
+			this->TxtResultado->Size = System::Drawing::Size(428, 29);
+			this->TxtResultado->TabIndex = 1;
+			// 
+			// label3
+			// 
+			this->label3->AutoSize = true;
+			this->label3->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label3->Location = System::Drawing::Point(12, 71);
+			this->label3->Name = L"label3";
+			this->label3->Size = System::Drawing::Size(108, 24);
+			this->label3->TabIndex = 3;
+			this->label3->Text = L"Numero 2:";
+			// 
+			// label4
+			// 
+			this->label4->AutoSize = true;
+			this->label4->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label4->Location = System::Drawing::Point(11, 209);
+			this->label4->Name = L"label4";
+			this->label4->Size = System::Drawing::Size(109, 24);
+			this->label4->TabIndex = 3;
+			this->label4->Text = L"Resultado:";
+			// 
+			// BtnResta
+			// 
+			this->BtnResta->BackColor = System::Drawing::Color::Cyan;
+			this->BtnResta->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->BtnResta->ForeColor = System::Drawing::Color::Snow;
+			this->BtnResta->Location = System::Drawing::Point(190, 118);
+			this->BtnResta->Name = L"BtnResta";
+			this->BtnResta->Size = System::Drawing::Size(100, 66);
+			this->BtnResta->TabIndex = 5;
+			this->BtnResta->Text = L"-";
+			this->BtnResta->UseVisualStyleBackColor = false;
+			this->BtnResta->Click += gcnew System::EventHandler(this, &MyForm::button1_Click);
+			// 
+			// BtnMulti
+			// 
+			this->BtnMulti->BackColor = System::Drawing::Color::Cyan;
+			this->BtnMulti->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->BtnMulti->ForeColor = System::Drawing::Color::Snow;
+			this->BtnMulti->Location = System::Drawing::Point(313, 117);
+			this->BtnMulti->Name = L"BtnMulti";
+			this->BtnMulti->Size = System::Drawing::Size(100, 66);
+			this->BtnMulti->TabIndex = 5;
+			this->BtnMulti->Text = L"X";
+			this->BtnMulti->UseVisualStyleBackColor = false;
+			this->BtnMulti->Click += gcnew System::EventHandler(this, &MyForm::BtnMulti_Click);
+			// 
+			// BtnDivi
+			// 
+			this->BtnDivi->BackColor = System::Drawing::Color::Cyan;
+			this->BtnDivi->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->BtnDivi->ForeColor = System::Drawing::SystemColors::ButtonFace;
+			this->BtnDivi->Location = System::Drawing::Point(444, 117);
+			this->BtnDivi->Name = L"BtnDivi";
+			this->BtnDivi->Size = System::Drawing::Size(100, 66);
+			this->BtnDivi->TabIndex = 6;
+			this->BtnDivi->Text = L"/";
+			this->BtnDivi->UseVisualStyleBackColor = false;
+			this->BtnDivi->Click += gcnew System::EventHandler(this, &MyForm::BtnDivi_Click_1);
+			// 
+			// MyForm
+			// 
+			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
+			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
+			this->ClientSize = System::Drawing::Size(575, 264);
+			this->Controls->Add(this->BtnDivi);
+			this->Controls->Add(this->BtnMulti);
+			this->Controls->Add(this->BtnResta);
+			this->Controls->Add(this->BtnSuma);
+			this->Controls->Add(this->label4);
+			this->Controls->Add(this->label3);
+			this->Controls->Add(this->label1);
+			this->Controls->Add(this->TxtResultado);
+			this->Controls->Add(this->Txt2);
+			this->Controls->Add(this->Txt1);
+			this->Name = L"MyForm";
+			this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
+			this->Text = L"Algoritmos";
+			this->ResumeLayout(false);
+			this->PerformLayout();
+
+		}
+#pragma endregion
+	private: System::Void textBox1_TextChanged(System::Object^ sender, System::EventArgs^ e) {
+	}
+	private: System::Void label1_Click(System::Object^ sender, System::EventArgs^ e) {
+	}
+	private: System::Void BtnSuma_Click(System::Object^ sender, System::EventArgs^ e) {
+		double n1, n2, resultado;
+		if (Txt1->Text == "" || Txt2->Text == "")
+			MessageBox::Show("INGRESAR NUMERO PORFAVOR");
+		else {
+			n1 = Convert::ToDouble(Txt1->Text);
+			n2 = Convert::ToDouble(Txt2->Text);
+			this->TxtResultado->Text = Convert::ToString(n1 + n2);
+		}
+	}
+	private: System::Void Txt2_TextChanged(System::Object^ sender, System::EventArgs^ e) {
+	}
+	private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
+		double n1, n2, resultado;
+		if (Txt1->Text == "" || Txt2->Text == "")
+			MessageBox::Show("INGRESAR NUMERO PORFAVOR");
+		else {
+			n1 = Convert::ToDouble(Txt1->Text);
+			n2 = Convert::ToDouble(Txt2->Text);
+			this->TxtResultado->Text = Convert::ToString(n1 - n2);
+		}
+	}
+	private: System::Void BtnMulti_Click(System::Object^ sender, System::EventArgs^ e) {
+		double n1, n2, resultado;
+		if (Txt1->Text == "" || Txt2->Text == "")
+			MessageBox::Show("INGRESAR NUMERO PORFAVOR");
+		else {
+			n1 = Convert::ToDouble(Txt1->Text);
+			n2 = Convert::ToDouble(Txt2->Text);
+			this->TxtResultado->Text = Convert::ToString(n1 * n2);
+		}
+	}
+	private: System::Void BtnDivi_Click_1(System::Object^ sender, System::EventArgs^ e) {
+		double n1, n2, resultado;
+		if (Txt1->Text == "" || Txt2->Text == "")
+			MessageBox::Show("INGRESAR NUMERO PORFAVOR");
+		else {
+			n1 = Convert::ToDouble(Txt1->Text);
+			n2 = Convert::ToDouble(Txt2->Text);
+			this->TxtResultado->Text = Convert::ToString(n1 / n2);
+		}
+	}
+	};
+}
