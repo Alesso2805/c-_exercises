@@ -1,0 +1,276 @@
+#include "MyForm.h"
+
+using namespace Project3;
+
+int main() {
+	Application::Run(gcnew MyForm());
+	return 0;
+}
+
+
+
+#pragma once
+
+using namespace System::Drawing;
+class Figura {
+protected:
+	//atributos de la clase
+	int x, y, dx, dy;
+public:
+	Figura(int x, int y);
+	~Figura();
+	virtual void dibujar(Graphics^ g){}
+	virtual void borrar(Graphics^ g){}
+	virtual void mover(Graphics^ g);
+};
+
+Figura::Figura(int x, int y) {
+	this->x = x;
+	this->y = y;
+	this->dx = 5; //dx= velocidad
+	this->dy = 5;
+}
+
+Figura::~Figura(){}
+
+void Figura::mover(Graphics^ g) {
+	borrar(g);
+	//establecer límites
+	if (x + dx<1 || x + dx>g->VisibleClipBounds.Width)
+		dx = dx * -1;
+	if (y + dy<1 || y + dy>g->VisibleClipBounds.Height)
+		dy = dy * -1;
+	//movimiento
+	x += dx;
+	y += dy;
+	dibujar(g);
+}
+
+
+
+
+
+
+#pragma once
+#include "Figura.h"
+class Circulo : public Figura //herencia
+{
+private:
+	int radio;
+public:
+	Circulo(int, int y, int radio);
+	~Circulo();
+	void dibujar(Graphics^ g);
+	void borrar(Graphics^ g);
+	void mover(Graphics^ g);
+};
+
+Circulo::Circulo(int x, int y, int radio) : Figura(x, y) {
+	this->radio = radio;
+}
+
+Circulo::~Circulo(){}
+void Circulo::dibujar(Graphics^ g) {
+	g->DrawEllipse(gcnew Pen(Color::Green), x, y, radio, radio);
+}
+
+void Circulo::borrar(Graphics^ g) {
+	g->DrawEllipse(gcnew Pen(Color::White), x, y, radio, radio);
+}
+
+void Circulo::mover(Graphics^ g) {
+	//1
+	//Figura::mover(g);
+
+	//2
+	borrar(g);
+	//establecer límites
+	if (x + dx<1 || x + dx>g->VisibleClipBounds.Width)
+		dx = dx * -1;
+	if (y + dy<1 || y + dy>g->VisibleClipBounds.Height)
+		dy = dy * -1;
+	//movimiento
+	x += dx;
+	y += dy;
+	dibujar(g);
+}
+
+
+
+
+
+
+#pragma once
+#include "Figura.h"
+class Cuadrado : public Figura //herencia
+{
+private:
+	int lado;
+public:
+	Cuadrado(int, int y, int radio);
+	~Cuadrado();
+	void dibujar(Graphics^ g);
+	void borrar(Graphics^ g);
+	void mover(Graphics^ g);
+};
+
+Cuadrado::Cuadrado(int x, int y, int lado) : Figura(x, y) {
+	this->lado = lado;
+}
+
+Cuadrado::~Cuadrado() {}
+void Cuadrado::dibujar(Graphics^ g) {
+	Pen^ lapicero = gcnew Pen(Color::Red);
+	g->DrawRectangle(lapicero, x, y, lado, lado);
+}
+
+void Cuadrado::borrar(Graphics^ g) {
+	Pen^ lapicero = gcnew Pen(Color::White);
+	g->DrawRectangle(lapicero, x, y, lado, lado);
+}
+
+void Cuadrado::mover(Graphics^ g) {
+	Figura::mover(g);
+}
+
+
+
+
+#pragma once
+#include "Circulo.h"
+#include "Cuadrado.h"
+#include <vector>
+using namespace System;
+using namespace std;
+class ArregloFiguras {
+private:
+	vector<Figura*>* arrf;
+public:
+	ArregloFiguras();
+	~ArregloFiguras();
+	void mostrar(Graphics^ g);
+	void agregarFigura(Graphics^ g, char op);
+};
+
+ArregloFiguras::ArregloFiguras() {
+	arrf = new vector<Figura*>();
+}
+ArregloFiguras::~ArregloFiguras() {
+	delete arrf;
+}
+void ArregloFiguras::mostrar(Graphics^ g) {
+	//accediendo a todos los elementos del arreglo
+	for (int i = 0; i < arrf->size(); i++) {
+		arrf->at(i)->borrar(g);
+		arrf->at(i)->mover(g);
+		arrf->at(i)->dibujar(g);
+	}
+}
+void ArregloFiguras::agregarFigura(Graphics^ g, char op) {
+	Random r;
+	Figura* fig;//declaramos un objeto de tipo fgura
+	switch (op) {
+	case 'C':
+		fig = new Circulo(r.Next(g->VisibleClipBounds.Right), r.Next(g->VisibleClipBounds.Bottom), r.Next(10, 30));
+		break;
+	case 'D':
+		fig = new Cuadrado(r.Next(g->VisibleClipBounds.Right), r.Next(g->VisibleClipBounds.Bottom), r.Next(10, 30));
+		break;
+	}
+	arrf->push_back(fig);//fig es variable polimorfica
+}
+
+
+
+#pragma once
+#include "VectFiguras.h"
+namespace Project3 {
+
+	using namespace System;
+	using namespace System::ComponentModel;
+	using namespace System::Collections;
+	using namespace System::Windows::Forms;
+	using namespace System::Data;
+	using namespace System::Drawing;
+
+	/// <summary>
+	/// Summary for MyForm
+	/// </summary>
+	public ref class MyForm : public System::Windows::Forms::Form
+	{
+	public:
+		MyForm(void)
+		{
+			InitializeComponent();
+			//
+			//TODO: Add the constructor code here
+			//
+			g = this->CreateGraphics();
+			arrF = new ArregloFiguras();
+			timer1->Enabled = true;
+		}
+
+	protected:
+		/// <summary>
+		/// Clean up any resources being used.
+		/// </summary>
+		~MyForm()
+		{
+			if (components)
+			{
+				delete components;
+			}
+		}
+
+	private:
+		/// <summary>
+		/// Required designer variable.
+		/// </summary>
+		Graphics^ g;
+		ArregloFiguras* arrF;
+	private: System::Windows::Forms::Timer^ timer1;
+	private: System::ComponentModel::IContainer^ components;
+
+
+#pragma region Windows Form Designer generated code
+		/// <summary>
+		/// Required method for Designer support - do not modify
+		/// the contents of this method with the code editor.
+		/// </summary>
+		void InitializeComponent(void)
+		{
+			this->components = (gcnew System::ComponentModel::Container());
+			this->timer1 = (gcnew System::Windows::Forms::Timer(this->components));
+			this->SuspendLayout();
+			// 
+			// timer1
+			// 
+			this->timer1->Tick += gcnew System::EventHandler(this, &MyForm::timer1_Tick);
+			// 
+			// MyForm
+			// 
+			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
+			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
+			this->ClientSize = System::Drawing::Size(1175, 467);
+			this->Name = L"MyForm";
+			this->Text = L"MyForm";
+			this->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &MyForm::MyForm_Paint);
+			this->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(this, &MyForm::MyForm_KeyDown);
+			this->ResumeLayout(false);
+
+		}
+#pragma endregion
+	private: System::Void MyForm_KeyDown(System::Object^ sender, System::Windows::Forms::KeyEventArgs^ e) {
+		if (e->KeyCode == Keys::C)
+			arrF->agregarFigura(g, 'C');
+		if (e->KeyCode == Keys::D)
+			arrF->agregarFigura(g, 'D');
+	}
+	private: System::Void MyForm_Paint(System::Object^ sender, System::Windows::Forms::PaintEventArgs^ e) {
+		g->Clear(Color::White);
+	}
+	private: System::Void timer1_Tick(System::Object^ sender, System::EventArgs^ e) {
+		arrF->mostrar(g);
+	}
+	};
+}
