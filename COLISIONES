@@ -1,0 +1,442 @@
+#include "MyForm.h"
+
+using namespace Project3;
+
+int main() {
+	Application::Run(gcnew MyForm());
+	return 0;
+}
+
+
+
+
+
+#pragma once
+#include "Hero.h"
+#include "Controller.h"
+#include <ctime>
+
+namespace Project3 {
+
+	using namespace System;
+	using namespace System::ComponentModel;
+	using namespace System::Collections;
+	using namespace System::Windows::Forms;
+	using namespace System::Data;
+	using namespace System::Drawing;
+
+	/// <summary>
+	/// Summary for frmMain
+	/// </summary>
+	public ref class MyForm : public System::Windows::Forms::Form
+	{
+	public:
+		MyForm (void)
+		{
+			InitializeComponent();
+			srand(time(NULL));
+			g = pnlCanvas->CreateGraphics();
+			space = BufferedGraphicsManager::Current;
+			buffer = space->Allocate(g, pnlCanvas->ClientRectangle);
+			bmpHero = gcnew Bitmap("rojo.png");
+			bmpEnemy = gcnew Bitmap("bruno.png");
+			bmpMap = gcnew Bitmap("fondo.png");
+			bmpBullet = gcnew Bitmap("pokeball.png");
+			hero = new Hero(bmpHero->Width / 4, bmpHero->Height / 4);
+			controller = new Controller();
+			controller->createEnemies(bmpEnemy->Width / 4, bmpEnemy->Height / 4);
+
+		}
+	protected:
+		~MyForm()
+		{
+			if (components)
+			{
+				delete components;
+			}
+		}
+	private: System::Windows::Forms::Timer^ timer1;
+	private: System::Windows::Forms::Panel^ pnlCanvas;
+	protected:
+	private: System::ComponentModel::IContainer^ components;
+	private:
+		Graphics^ g;
+		BufferedGraphicsContext^ space;
+		BufferedGraphics^ buffer;
+		Bitmap^ bmpHero;
+		Bitmap^ bmpEnemy;
+		Bitmap^ bmpMap;
+		Bitmap^ bmpBullet;
+		Hero* hero;
+		Controller* controller;
+
+
+
+#pragma region Windows Form Designer generated code
+		/// <summary>
+		/// Required method for Designer support - do not modify
+		/// the contents of this method with the code editor.
+		/// </summary>
+		void InitializeComponent(void)
+		{
+			this->components = (gcnew System::ComponentModel::Container());
+			this->timer1 = (gcnew System::Windows::Forms::Timer(this->components));
+			this->pnlCanvas = (gcnew System::Windows::Forms::Panel());
+			this->SuspendLayout();
+			// 
+			// timer1
+			// 
+			this->timer1->Enabled = true;
+			this->timer1->Tick += gcnew System::EventHandler(this, &MyForm::timer1_Tick);
+			// 
+			// pnlCanvas
+			// 
+			this->pnlCanvas->Location = System::Drawing::Point(-2, -1);
+			this->pnlCanvas->Name = L"pnlCanvas";
+			this->pnlCanvas->Size = System::Drawing::Size(745, 429);
+			this->pnlCanvas->TabIndex = 0;
+			// 
+			// frmMain
+			// 
+			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
+			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
+			this->ClientSize = System::Drawing::Size(744, 428);
+			this->Controls->Add(this->pnlCanvas);
+			this->Name = L"frmMain";
+			this->Text = L"frmMain";
+			this->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(this, &MyForm::presionar);
+			this->ResumeLayout(false);
+
+		}
+#pragma endregion
+	private: System::Void timer1_Tick(System::Object^ sender, System::EventArgs^ e) {
+		//clear
+		buffer->Graphics->Clear(Color::WhiteSmoke);
+		//collision
+		controller->collision(buffer->Graphics);
+
+		//move para el personaje se hara con teclas
+		controller->moveEveryThing(buffer->Graphics);
+		//draw
+		buffer->Graphics->DrawImage(bmpMap, 0, 0, bmpMap->Width * 2.2, bmpMap->Height * 1.6);
+		controller->drawEveryThing(buffer->Graphics, bmpEnemy, bmpBullet);
+		hero->draw(buffer->Graphics, bmpHero);
+
+
+		//Render
+		buffer->Render(g);
+
+	}
+
+	private: System::Void presionar(System::Object^ sender, System::Windows::Forms::KeyEventArgs^ e) {
+		switch (e->KeyCode)
+		{
+		case Keys::A:
+			hero->move(buffer->Graphics, 'A'); break;
+		case Keys::D:
+			hero->move(buffer->Graphics, 'D'); break;
+		case Keys::S:
+			hero->move(buffer->Graphics, 'S'); break;
+		case Keys::W:
+			hero->move(buffer->Graphics, 'W'); break;
+		case Keys::Space:
+			Bullet* b = new Bullet(hero->getX(), hero->getY(), bmpBullet->Width, bmpBullet->Height, hero->getDirection());
+			controller->addBullet(b);
+
+		}
+
+	}
+	};
+}
+
+
+
+
+#pragma once
+using namespace System::Drawing;
+class Hero {
+private:
+	int x, y; // ubicacion
+	int dx, dy; // movimiento
+	int idX, idY; // index x e y
+	int width, height;
+	char direction;
+public:
+	Hero(int w, int h) {
+		width = w;
+		height = h;
+		dx = dy = 15;
+		x = 70;
+		y = 70;
+		idX = idY = 0;
+		direction = 'S';
+	}
+	void draw(Graphics^ g, Bitmap^ bmp) {
+		Rectangle sectionShow = Rectangle(idX * width, idY * height, width, height);
+		Rectangle zoom = Rectangle(x, y, width * 1.0, height * 1.0);
+		g->DrawImage(bmp, zoom, sectionShow, GraphicsUnit::Pixel);
+	}
+	void move(Graphics^ g, char i) {
+		switch (i)
+		{
+		case 'A':
+			if (x > 0) {
+				idY = 1;
+				x -= dx;
+				direction = 'A';
+			}
+			break;
+		case 'D':
+			if (x + width * 1.0 < g->VisibleClipBounds.Width) {
+				idY = 2;
+				x += dx;
+				direction = 'D';
+			}
+			break;
+		case 'W':
+			if (y > 0) {
+				idY = 3;
+				y -= dy;
+				direction = 'W';
+			}
+			break;
+		case 'S':
+			if (y + height * 1.0 < g->VisibleClipBounds.Height) {
+				idY = 0;
+				y += dy;
+				direction = 'S';
+			}
+			break;
+		}
+		idX++;
+		if (idX > 3) idX = 0;
+	}
+	char getDirection() { return direction; }
+	int getX() { return x; }
+	int getY() { return y; }
+};
+
+
+
+
+
+#pragma once
+#include <iostream>
+using namespace System::Drawing;
+
+class Enemy {
+private:
+	int x, y;
+	int dx, dy;
+	int idX, idY;
+	int width, height;
+	int direccion;
+	bool visibility;
+
+public:
+	Enemy(int w, int h, int d) {
+		width = w;
+		height = h;
+		direccion = d;
+		dx = dy = 20;
+		x = rand() % 900;
+		y = rand() % 200;
+		idX = idY = 0;
+		visibility = true;
+	}
+	~Enemy() {}
+
+	void draw(Graphics^ g, Bitmap^ bmp) {
+		Rectangle sectionShow = Rectangle(idX * width, idY * height, width, height);
+		Rectangle zoom = Rectangle(x, y, width, height);
+		g->DrawImage(bmp, zoom, sectionShow, GraphicsUnit::Pixel);
+	}
+
+	void move(Graphics^ g) {
+		if (direccion == 1) { // los enemigos se mueven de izquierda a derecha
+			if (x + width * 1.0 > g->VisibleClipBounds.Width || x < 0) dx *= -1;
+			if (dx > 0) { //dx=20
+				idY = 2;
+			}
+			else // dx=-20
+				idY = 1;
+			x += dx;
+		}
+		else {
+			if (y + height * 1.0 > g->VisibleClipBounds.Height || y < 0) dy *= -1;
+
+			if (dy > 0) {
+				idY = 0;
+			}
+			else
+				idY = 3;
+			y += dy;
+
+		}
+		idX++;
+		if (idX > 3)
+			idX = 0;
+	}
+	Rectangle getRectangle() {
+		return Rectangle(x, y, width * 1.0, height * 1.0);
+	}
+
+	void setVisibility(bool v) { visibility = v; }
+	bool getVisibility() { return visibility; }
+
+};
+
+
+
+
+
+#pragma once
+#include <iostream>
+using namespace System::Drawing;
+
+class Bullet {
+private:
+	int x, y;
+	int dx, dy;
+	int width, height;
+	char direction;
+	bool visibility;
+
+public:
+	Bullet(int x, int y, int w, int h, char d) {
+		width = w;
+		height = h;
+		direction = d;
+		dx = dy = 30;
+		this->x = x;
+		this->y = y;
+		visibility = true;
+	}
+	~Bullet() {}
+	void draw(Graphics^ g, Bitmap^ bmp) {
+		g->DrawImage(bmp, x, y, width * 0.03, height * 0.03);
+	}
+
+	void move(Graphics^ g)
+	{
+		if (direction == 'S' && y + height * 0.03 <= g->VisibleClipBounds.Height) {
+			y += dy;
+		}
+		if (direction == 'W' && y >= 0) {
+			y -= dy;
+		}
+		if (direction == 'A' && x >= 0) {
+			x -= dx;
+		}
+		if (direction == 'D' && x + width * 0.03 <= g->VisibleClipBounds.Width) {
+			x += dx;
+		}
+
+
+	}
+
+	Rectangle getRectangle() {
+		return Rectangle(x, y, width * 0.03, height * 0.03);
+	}
+	int getX() { return x; }
+	int getXWidth() { return x + width * 0.03; }
+	int getY() { return y; }
+	int getYHeight() { return y + height * 0.03; }
+
+	void setVisibility(bool v) { visibility = v; }
+	bool getVisibility() { return visibility; }
+
+};
+
+
+
+
+#pragma once
+#include "Bullet.h"
+#include "Enemy.h"
+#include <vector>
+
+using namespace std;
+class Controller {
+private:
+	vector<Bullet*>Bullets;
+	vector<Enemy*>enemies;
+	int numberOfEnemies;
+public:
+	Controller() {
+		numberOfEnemies = rand() % 6 + 3;
+	}
+
+	~Controller() {}
+
+	void createEnemies(int width, int height) {
+		for (int i = 0; i < numberOfEnemies; i++)
+		{
+			Enemy* e = new Enemy(width, height, rand() % 2);
+			enemies.push_back(e);
+		}
+	}
+	void addBullet(Bullet* b) {
+		Bullets.push_back(b);
+	}
+	void drawEveryThing(Graphics^ g, Bitmap^ bmpEnemy, Bitmap^ bmpBullet) {
+		for (int i = 0; i < enemies.size(); i++)
+		{
+			enemies[i]->draw(g, bmpEnemy);
+		}
+		for (int i = 0; i < Bullets.size(); i++)
+		{
+			Bullets[i]->draw(g, bmpBullet);
+		}
+	}
+
+	void moveEveryThing(Graphics^ g) {
+		for (int i = 0; i < enemies.size(); i++)
+		{
+			enemies[i]->move(g);
+		}
+		for (int i = 0; i < Bullets.size(); i++)
+		{
+			Bullets[i]->move(g);
+		}
+	}
+	void collision(Graphics^ g) {
+		//verificar
+		for (int i = 0; i < Bullets.size(); i++)
+		{
+			if (Bullets[i]->getX() <= 0 || Bullets[i]->getXWidth() >= g->VisibleClipBounds.Width ||
+				Bullets[i]->getY() <= 0 || Bullets[i]->getYHeight() >= g->VisibleClipBounds.Height) {
+				Bullets[i]->setVisibility(false);
+			}
+		}
+
+		// colision bullet vs enemy
+		for (int i = 0; i < enemies.size(); i++)
+		{
+			for (int j = 0; j < Bullets.size(); j++)
+			{
+				if (enemies[i]->getRectangle().IntersectsWith(Bullets[j]->getRectangle())) {
+					enemies[i]->setVisibility(false);
+					Bullets[j]->setVisibility(false);
+				}
+			}
+		}
+		//borrar
+		for (int i = 0; i < Bullets.size(); i++)
+		{
+			if (!Bullets[i]->getVisibility()) { //if(Bullets[i]->getVisibility()==false)
+				Bullets.erase(Bullets.begin() + i);
+			}
+		}
+
+		for (int i = 0; i < enemies.size(); i++)
+		{
+			if (!enemies[i]->getVisibility()) {
+				enemies.erase(enemies.begin() + i);
+			}
+		}
+
+	}
+
+
+};
