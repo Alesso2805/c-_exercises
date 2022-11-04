@@ -1,0 +1,436 @@
+#include "MyForm.h"
+
+using namespace PC22;
+
+int main() {
+	Application::Run(gcnew MyForm());
+	return 0;
+}
+
+
+
+#pragma once
+#include "Controller.h"
+namespace PC22 {
+
+	using namespace System;
+	using namespace System::ComponentModel;
+	using namespace System::Collections;
+	using namespace System::Windows::Forms;
+	using namespace System::Data;
+	using namespace System::Drawing;
+
+	/// <summary>
+	/// Resumen de FrmMain
+	/// </summary>
+	public ref class MyForm : public System::Windows::Forms::Form
+	{
+	private:
+		//controller
+		Controller* controller;
+		//Buffer
+		Graphics^ g;
+		BufferedGraphicsContext^ space;
+		BufferedGraphics^ buffer;
+
+		//Bitmap
+		Bitmap^ bmpHero;
+		Bitmap^ bmpMap;
+	private: System::Windows::Forms::Label^ lblHP;
+
+	private: System::Windows::Forms::Label^ label1;
+
+
+		   Bitmap^ bmpEnemy;
+	public:
+		MyForm(void)
+		{
+			InitializeComponent();
+			//
+			//TODO: agregar código de constructor aquí
+			//
+			//Buffer
+			g = panel1->CreateGraphics();
+			space = BufferedGraphicsManager::Current;
+			buffer = space->Allocate(g, panel1->ClientRectangle);
+
+			//Bitmap
+			bmpHero = gcnew Bitmap("Persoanje.jpeg");
+			bmpEnemy = gcnew Bitmap("imagenes.jpeg");
+
+			//Controller
+			controller = new Controller(bmpHero, bmpEnemy);
+		}
+
+	protected:
+		/// <summary>
+		/// Limpiar los recursos que se estén usando.
+		/// </summary>
+		~MyForm()
+		{
+			if (components)
+			{
+				delete components;
+			}
+		}
+	private: System::Windows::Forms::Timer^ timer1;
+	protected:
+	private: System::Windows::Forms::Panel^ panel1;
+	private: System::ComponentModel::IContainer^ components;
+
+	private:
+		/// <summary>
+		/// Variable del diseñador necesaria.
+		/// </summary>
+
+
+#pragma region Windows Form Designer generated code
+		/// <summary>
+		/// Método necesario para admitir el Diseñador. No se puede modificar
+		/// el contenido de este método con el editor de código.
+		/// </summary>
+		void InitializeComponent(void)
+		{
+			this->components = (gcnew System::ComponentModel::Container());
+			this->timer1 = (gcnew System::Windows::Forms::Timer(this->components));
+			this->panel1 = (gcnew System::Windows::Forms::Panel());
+			this->lblHP = (gcnew System::Windows::Forms::Label());
+			this->label1 = (gcnew System::Windows::Forms::Label());
+			this->panel1->SuspendLayout();
+			this->SuspendLayout();
+			// 
+			// timer1
+			// 
+			this->timer1->Enabled = true;
+			this->timer1->Tick += gcnew System::EventHandler(this, &MyForm::timer1_Tick);
+			// 
+			// panel1
+			// 
+			this->panel1->Controls->Add(this->lblHP);
+			this->panel1->Controls->Add(this->label1);
+			this->panel1->Location = System::Drawing::Point(12, 12);
+			this->panel1->Name = L"panel1";
+			this->panel1->Size = System::Drawing::Size(924, 521);
+			this->panel1->TabIndex = 0;
+			// 
+			// lblHP
+			// 
+			this->lblHP->AutoSize = true;
+			this->lblHP->Location = System::Drawing::Point(400, 4);
+			this->lblHP->Name = L"lblHP";
+			this->lblHP->Size = System::Drawing::Size(0, 13);
+			this->lblHP->TabIndex = 1;
+			// 
+			// label1
+			// 
+			this->label1->AutoSize = true;
+			this->label1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label1->Location = System::Drawing::Point(310, 4);
+			this->label1->Name = L"label1";
+			this->label1->Size = System::Drawing::Size(70, 20);
+			this->label1->TabIndex = 0;
+			this->label1->Text = L"Puntaje";
+			// 
+			// MyForm
+			// 
+			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
+			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
+			this->ClientSize = System::Drawing::Size(948, 545);
+			this->Controls->Add(this->panel1);
+			this->Name = L"MyForm";
+			this->Text = L"FrmMain";
+			this->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(this, &MyForm::FrmMain_KeyDown);
+			this->panel1->ResumeLayout(false);
+			this->panel1->PerformLayout();
+			this->ResumeLayout(false);
+
+		}
+#pragma endregion
+	private: System::Void timer1_Tick(System::Object^ sender, System::EventArgs^ e) {
+		//Clear
+		buffer->Graphics->Clear(Color::White);
+		//Collision
+		controller->collision();
+		//Move
+		controller->moveEverything(buffer->Graphics);
+		//Draw
+		lblHP->Text = Convert::ToString(controller->getHero()->getHp());
+		controller->drawEverything(buffer->Graphics, bmpHero, bmpEnemy);
+		//Render
+		buffer->Render(g);
+	}
+	private: System::Void FrmMain_KeyDown(System::Object^ sender, System::Windows::Forms::KeyEventArgs^ e) {
+		switch (e->KeyCode)
+		{
+		case Keys::A: case Keys::Left:
+			controller->getHero()->move(buffer->Graphics, 'A'); break;
+		case Keys::D: case Keys::Right:
+			controller->getHero()->move(buffer->Graphics, 'D'); break;
+		case Keys::W: case Keys::Up:
+			controller->getHero()->move(buffer->Graphics, 'W'); break;
+		case Keys::S: case Keys::Down:
+			controller->getHero()->move(buffer->Graphics, 'S'); break;
+		}
+	}
+	};
+}
+
+
+
+
+#pragma once
+#include "Character.h"
+#include "Hero.h"
+
+class Enemy : public Character {
+private:
+	int type;
+	int puntos;
+public:
+	Enemy(int width, int height, int type) : Character(width, height) {
+		this->type = type;
+		x = rand() % 60 * 10;
+		y = rand() % 30 * 10;
+		dx = dy = 5;
+	}
+
+	~Enemy() {}
+
+	void move(Graphics^ g, Hero* hero) {
+		int r = rand() % 4;
+		switch (type)
+		{
+		case 0: //Horizontal
+			if (x + width * 1.0 > g->VisibleClipBounds.Width || x < 0) dx *= -1;
+			if (dx > 0) {
+				idy = 2;
+			}
+			else {
+				idy = 1;
+				x += dx;
+				puntos = +5;
+			}
+			break;
+
+		case 1: //Vertical
+			if (y + height * 1.0 > g->VisibleClipBounds.Height || y < 0) dy *= -1;
+			if (dy > 0) {
+				idy = 0;
+			}
+			else {
+				idy = 3;
+				y += dy;
+				puntos = -5;
+			}
+			break;
+
+		case 2: //Random
+			dx = 10;
+			dy = 10;
+			switch (r)
+			{
+			case 0:
+				if (x > 0) {
+					x -= dx;
+					idy = 1;
+					puntos = +10;
+				}
+				break;
+
+			case 1:
+				if (x + width * 1.0 < g->VisibleClipBounds.Width) {
+					x += dx;
+					idy = 2;
+					puntos = -5;
+				}
+				break;
+
+			case 2:
+				if (y > 0) {
+					y -= dy;
+					idy = 3;
+					puntos = +10;
+				}
+				break;
+
+			case 3:
+				if (y + height * 1.0 < g->VisibleClipBounds.Height) {
+					y += dy;
+					idy = 0;
+					puntos = -5;
+				}
+				break;
+			}
+			break;
+		}
+
+		idx++;
+		if (idx > 3)idx = 0;
+	}
+};
+
+
+
+
+#pragma once
+#include "Imagenes.h"
+#include <vector>
+
+using namespace std;
+
+class Controller {
+private:
+	Hero* hero;
+	vector<Enemy*> enemies;
+public:
+	Controller(Bitmap^ bmpHero, Bitmap^ bmpEnemy) {
+		hero = new Hero(bmpHero->Width / 4, bmpHero->Height / 4);
+		enemies.push_back(new Enemy(bmpEnemy->Width / 3, bmpEnemy->Height / 3, 0));
+		enemies.push_back(new Enemy(bmpEnemy->Width / 3, bmpEnemy->Height / 3, 1));
+		enemies.push_back(new Enemy(bmpEnemy->Width / 3, bmpEnemy->Height / 3, 2));
+		enemies.push_back(new Enemy(bmpEnemy->Width / 3, bmpEnemy->Height / 3, 3));
+	}
+
+	~Controller() {}
+
+	void drawEverything(Graphics^ g, Bitmap^ bmpHero, Bitmap^ bmpEnemy) {
+		hero->draw(g, bmpHero);
+		for (int i = 0; i < enemies.size(); i++) {
+			enemies[i]->draw(g, bmpEnemy);
+		}
+	}
+
+	void moveEverything(Graphics^ g) {
+		for (int i = 0; i < enemies.size(); i++) {
+			enemies[i]->move(g, hero);
+		}
+	}
+
+	void collision() {
+		//Verification
+		for (int i = 0; i < enemies.size(); i++) {
+			if (hero->getRectangle().IntersectsWith(enemies[i]->getRectangle())) {
+				hero->decreaseHp();
+				enemies[i]->setVisible(false);
+			}
+		}
+
+		//Elimination
+		for (int i = 0; i < enemies.size(); i++) {
+			if (!enemies[i]->getVisible()) {
+				enemies.erase(enemies.begin() + i);
+			}
+		}
+
+	}
+
+	Hero* getHero() { return hero; }
+};
+
+
+
+
+#pragma once
+#include "Character.h"
+
+class Hero : public Character {
+private:
+	int puntos;
+
+public:
+	Hero(int width, int height) : Character(width, height) {
+		dx = dy = 15;
+		x = y = 100;
+		puntos = 1000;
+	}
+
+	~Hero() {}
+
+	void move(Graphics^ g, char i) {
+		switch (i)
+		{
+		case 'A':
+			if (x > 0) {
+				x -= dx;
+				idy = 1;
+			}
+			break;
+
+		case 'D':
+			if (x + width * 1.0 < g->VisibleClipBounds.Width) {
+				x += dx;
+				idy = 2;
+			}
+			break;
+
+		case 'W':
+			if (y > 0) {
+				y -= dy;
+				idy = 3;
+			}
+			break;
+
+		case 'S':
+			if (y + height * 1.0 < g->VisibleClipBounds.Height) {
+				y += dy;
+				idy = 0;
+			}
+			break;
+		}
+
+		idx++;
+		if (idx > 3)idx = 0;
+	}
+
+	int getHp() { return puntos; }
+	void decreaseHp() { puntos++; }
+
+};
+
+
+
+
+
+#pragma once
+#include <iostream>
+
+using namespace System::Drawing;
+
+class Character {
+protected:
+	int x, y;
+	int dx, dy;
+	int width, height;
+	int idx, idy;
+	bool visible;
+
+public:
+	Character(int width, int height) {
+		this->width = width;
+		this->height = height;
+		idx = idy = 0;
+		visible = true;
+	}
+
+	~Character() {}
+
+	void draw(Graphics^ g, Bitmap^ bmp) {
+		Rectangle sectionShown = Rectangle(idx * width, idy * height, width, height);
+		Rectangle zoom = Rectangle(x, y, width * 1.0, height * 1.0);
+		g->DrawImage(bmp, zoom, sectionShown, GraphicsUnit::Pixel);
+	}
+
+	virtual void move() {}
+
+	int getX() { return x; }
+	int getY() { return y; }
+	bool getVisible() { return visible; }
+	void setVisible(bool v) { visible = v; }
+
+	Rectangle getRectangle() {
+		return Rectangle(x, y, width * 1.0, height * 1.0);
+	}
+};
+
+
