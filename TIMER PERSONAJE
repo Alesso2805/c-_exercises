@@ -1,0 +1,276 @@
+#pragma once
+#include "Controller.h"
+#include "File.h"
+#include <ctime>
+namespace Project13 {
+
+	using namespace System;
+	using namespace System::ComponentModel;
+	using namespace System::Collections;
+	using namespace System::Windows::Forms;
+	using namespace System::Data;
+	using namespace System::Drawing;
+
+	/// <summary>
+	/// Summary for MyForm
+	/// </summary>
+	public ref class MyForm : public System::Windows::Forms::Form
+	{
+	public:
+		MyForm(void)
+		{
+			InitializeComponent();
+			//
+			//TODO: Add the constructor code here
+			//
+			srand(time(NULL));
+			cont = 0;
+			g = this->CreateGraphics();
+			space = BufferedGraphicsManager::Current;
+			buffer = space->Allocate(g, this->ClientRectangle);
+			bmpEnemy = gcnew Bitmap("proton.png");
+			controller = new Controller();
+			file = new File();
+			file->readData();
+		}
+
+	protected:
+		/// <summary>
+		/// Clean up any resources being used.
+		/// </summary>
+		~MyForm()
+		{
+			if (components)
+			{
+				delete components;
+			}
+		}
+	private: System::Windows::Forms::Timer^ timerMain;
+	private: System::Windows::Forms::Timer^ timerEnemies;
+	private: System::Windows::Forms::Timer^ timerTime;
+	private: System::Windows::Forms::Label^ LblTime;
+	protected:
+
+	protected:
+	private: System::ComponentModel::IContainer^ components;
+
+	private:
+		/// <summary>
+		/// Required designer variable.
+		/// </summary>
+		int cont;
+		Graphics^ g;
+		BufferedGraphicsContext^ space;
+		BufferedGraphics^ buffer;
+		Bitmap^ bmpEnemy;
+		Controller* controller;
+		File* file;
+
+#pragma region Windows Form Designer generated code
+		/// <summary>
+		/// Required method for Designer support - do not modify
+		/// the contents of this method with the code editor.
+		/// </summary>
+		void InitializeComponent(void)
+		{
+			this->components = (gcnew System::ComponentModel::Container());
+			this->timerMain = (gcnew System::Windows::Forms::Timer(this->components));
+			this->timerEnemies = (gcnew System::Windows::Forms::Timer(this->components));
+			this->timerTime = (gcnew System::Windows::Forms::Timer(this->components));
+			this->LblTime = (gcnew System::Windows::Forms::Label());
+			this->SuspendLayout();
+			// 
+			// timerMain
+			// 
+			this->timerMain->Enabled = true;
+			this->timerMain->Tick += gcnew System::EventHandler(this, &MyForm::timer1_Tick);
+			// 
+			// timerEnemies
+			// 
+			this->timerEnemies->Tick += gcnew System::EventHandler(this, &MyForm::timerEnemies_Tick);
+			// 
+			// timerTime
+			// 
+			this->timerTime->Enabled = true;
+			this->timerTime->Interval = 1000;
+			this->timerTime->Tick += gcnew System::EventHandler(this, &MyForm::timerTime_Tick);
+			// 
+			// LblTime
+			// 
+			this->LblTime->AutoSize = true;
+			this->LblTime->Location = System::Drawing::Point(273, 43);
+			this->LblTime->Name = L"LblTime";
+			this->LblTime->Size = System::Drawing::Size(35, 13);
+			this->LblTime->TabIndex = 0;
+			this->LblTime->Text = L"label1";
+			// 
+			// MyForm
+			// 
+			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
+			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
+			this->ClientSize = System::Drawing::Size(584, 337);
+			this->Controls->Add(this->LblTime);
+			this->Name = L"MyForm";
+			this->Text = L"MyForm";
+			this->Load += gcnew System::EventHandler(this, &MyForm::MyForm_Load);
+			this->ResumeLayout(false);
+			this->PerformLayout();
+
+		}
+#pragma endregion
+	private: System::Void timer1_Tick(System::Object^ sender, System::EventArgs^ e) {
+		buffer->Graphics->Clear(Color::WhiteSmoke);
+		controller->moveEverything(buffer->Graphics);
+		controller->drawEverything(buffer->Graphics, bmpEnemy);
+		buffer->Render(g);
+	}
+	private: System::Void timerTime_Tick(System::Object^ sender, System::EventArgs^ e) {
+		cont++;
+		LblTime->Text = Convert::ToString(cont);
+	}
+private: System::Void timerEnemies_Tick(System::Object^ sender, System::EventArgs^ e) {
+	if (controller->getEnemies() < 10)
+		controller->addEnemy(new Enemy(bmpEnemy->Width / 4, bmpEnemy->Height / 4, file->getX(), file->getY()));
+}
+private: System::Void MyForm_Load(System::Object^ sender, System::EventArgs^ e) {
+	timerEnemies->Interval = file->getN() * 1000;
+	timerEnemies->Enabled = true;
+}
+};
+}
+
+
+#include "MyForm.h"
+
+using namespace Project13;
+
+int main() {
+	Application::Run(gcnew(MyForm));
+	return 0;
+}
+
+#pragma once
+#include <iostream>
+using namespace System::Drawing;
+class Enemy {
+private:
+	int x, y;
+	int dx, dy;
+	int idX, idY;
+	int width, height;
+	int index;
+
+public:
+	Enemy(int w, int h, int x, int y) {
+		width = w;
+		height = h;
+		this->x = x;
+		this->y = y;
+		dx = dy = 20;
+		idX = idY = 0;
+		index = rand() % 2;
+		_sleep(10);
+	}
+
+	void draw(Graphics^ g, Bitmap^ bmp) {
+		Rectangle sectionShow = Rectangle(idX * width, idY * height, width, height);
+		Rectangle zoom = Rectangle(x, y, width, height);
+		g->DrawImage(bmp, zoom, sectionShow, GraphicsUnit::Pixel);
+	}
+
+	void move(Graphics^ g) {
+		if (index == 0) { // los enemigos se mueven de izquierda a derecha
+			if (x + width * 1.0 > g->VisibleClipBounds.Width || x < 0) dx *= -1;
+			if (dx > 0) { //dx=20
+				idY = 2;
+			}
+			else // dx=-20
+				idY = 1;
+			x += dx;
+		}
+		else {
+			if (y + height * 1.0 > g->VisibleClipBounds.Height || y < 0) dy *= -1;
+
+			if (dy > 0) {
+				idY = 0;
+			}
+			else
+				idY = 3;
+			y += dy;
+
+		}
+		idX++;
+		if (idX > 3)
+			idX = 0;
+	}
+};
+
+
+
+#pragma once
+#include <iostream>
+#include <stdlib.h>
+#include <fstream>
+#include <string>
+
+using namespace System;
+using namespace std;
+class File {
+private:
+	ofstream fileWrite; //ofstream permite escribir, es como un fichero de salida
+	ifstream fileRead; //como un fichero de entrada
+	string text;
+	int n, x, y;
+public:
+	File(){}
+	~File() {}
+
+	void readData() {
+		fileRead.open("configuration.txt", ios::in); //ios::in modo de entrada
+		if (fileRead.fail()) {//se usa para verificar si la secuencia ha generado algun error
+			fileRead.close();
+			fileWrite.open("configuration.txt", ios::out); //ios::out modo de salida
+			fileWrite << "10" << endl;
+			fileWrite << "200" << endl;
+			fileWrite << "100" << endl;
+			fileWrite.close();
+			fileRead.open("configuration.txt", ios::in);
+		}
+		getline(fileRead, text); //esta funcion lee una linea entera de stream
+		n = atoi(text.c_str()); //funcion atoi cpnvierte una cadena a entero
+		                        //c_str es un puntero cuyo contenido es una cadena que apunta a una matriz de caracteres
+		getline(fileRead, text);
+		x = atoi(text.c_str());
+		getline(fileRead, text);
+		y = atoi(text.c_str());
+		fileRead.close();
+	}
+	int getN() { return n; }
+	int getX() { return x; }
+	int getY() { return y; }
+};
+
+
+#pragma once
+#include "Enemy.h"
+#include <vector>
+using namespace std;
+class Controller {
+private:
+	vector<Enemy*>enemies;
+public:
+	Controller(){}
+	~Controller() {}
+	void addEnemy(Enemy* e) {
+		enemies.push_back(e);
+	}
+	void drawEverything(Graphics^ g, Bitmap^ bmpEnemy) {
+		for (int i = 0; i < enemies.size(); i++)
+			enemies[i]->draw(g, bmpEnemy);
+	}
+	void moveEverything(Graphics^ g) {
+		for (int i = 0; i < enemies.size(); i++)
+			enemies[i]->move(g);
+	}
+	int getEnemies() { return enemies.size(); }
+};
